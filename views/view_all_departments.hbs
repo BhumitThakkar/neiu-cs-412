@@ -1,0 +1,9 @@
+<ul>
+    {{#if departmentList}}
+        {{#each departmentList}}
+            <li>{{ key }}:<a href="/departments/view?key={{ key }}">{{ name }}</a></li>
+        {{/each}}
+    {{else}}
+        No Departments to List
+    {{/if}}
+</ul>

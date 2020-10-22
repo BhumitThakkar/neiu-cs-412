@@ -1,0 +1,14 @@
+<form method="post" action="/departments/save">
+    <input type="hidden" name="saveMethod" value="{{#if isCreate }}create{{ else }}update{{/if }}">
+    <p>
+        Key: {{ departmentKey }}
+        <input type="hidden" name="departmentKey" value="{{ departmentKey }}"/>
+    </p>
+    <p>
+        Department Name: <input type="text" name="departmentName" value="{{ departmentName }}"/> <br/>
+    </p>
+    <p>
+        Department Head: <input type="text" name="departmentHead" value="{{ departmentHead }}"/> <br/>
+    </p>
+    <input type="submit" value="Submit">
+</form>

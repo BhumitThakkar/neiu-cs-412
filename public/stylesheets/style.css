@@ -1,0 +1,26 @@
+* {
+}
+
+body {
+  margin: auto;
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: mediumblue;
+}
+
+.logo {
+  max-height: 150px;
+}
+
+.logo, header {
+  text-align: center;
+}
+
+header {
+  background: lightblue;
+  margin-bottom: 50px;
+  padding-bottom: 10px;
+}
