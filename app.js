@@ -30,7 +30,11 @@ app.use(logger('dev'))
 app.use(express.json())                                        // needed for post and put request
 app.use(express.urlencoded({ extended: false }))        // needed for post and put request
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))        // static search starts from public
+app.use(express.static(path.join(__dirname, 'public')))        // static search starts from public for all request
+app.use('/assets/vendor/bootstrap', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist')))              // static search for specific request
+app.use('/assets/vendor/jquery', express.static(path.join(__dirname, 'node_modules', 'jquery', 'dist')))                    // static search for specific request
+app.use('/assets/vendor/popper.js', express.static(path.join(__dirname, 'node_modules', 'popper.js', 'dist', 'umd')))       // static search for specific request
+app.use('/assets/vendor/feather-icons', express.static(path.join(__dirname, 'node_modules', 'feather-icons', 'dist')))       // static search for specific request
 
 // Router function lists
 app.use('/', indexRouter)

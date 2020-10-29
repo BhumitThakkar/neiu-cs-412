@@ -1,11 +1,25 @@
 <header>
-    <img class="logo" src="/images/appImage.png"/>
-    <h1>{{ title }}</h1>
-    <div class="navbar">
-        <p>
-            <a href="/">Home</a> |
-            <a href="/departments/add">Add Department</a> |
-            <a href="/departments/viewAll">View All Department</a>
-        </p>
-    </div>
+    <!--<nav class="nav nav-pills justify-content-center">
+        <a class="nav-item nav-link {{isHomeActive}}" href="/">Home</a>
+        <a class="nav-item nav-link {{isAddDepartmentActive}}" href="/departments/add">Add Department</a>
+        <a class="nav-item nav-link {{isAllDepartmentActive}}" href="/departments/viewAll">All Departments</a>
+    </nav>-->
+
+    <nav class="navbar navbar-expand-sm navbar-light bg-light border">
+        <a class="navbar-brand" href="/"><img class="logo" src="/assets/images/appImage.png"/></a>
+        <br/>
+        <a class="navbar-brand" href="/"><i data-feather="home"></i></a>
+        <button class="navbar-toggler" type="button"
+            data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <span class="navbar-text col text-left">{{ title }}</span>
+            <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/add">Add Department</a>
+            <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/viewAll">All Departments</a>
+        </div>
+    </nav>
+
 </header>

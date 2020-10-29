@@ -10,7 +10,8 @@ router.get('/add', async function(req, res, next) {
             title : 'Add Department',
             departmentKey : await departmentsStore.count(),
             layout : 'layouts',
-            styles : ['/stylesheets/style.css']
+            styles : ['/assets/stylesheets/style.css'],
+            isAddDepartmentActive: 'active'
         }
         res.render('add_department', options)
     }
@@ -44,7 +45,7 @@ router.get('/view', async function(req, res, next) {
             departmentName : department.name,
             departmentHead : department.head,
             layout : 'layouts',
-            styles : ['/stylesheets/style.css']
+            styles : ['/assets/stylesheets/style.css']
         }
         res.render('view_department', options)
     }
@@ -64,7 +65,7 @@ router.get('/edit', async function(req, res, next) {
             departmentName : department.name,
             departmentHead : department.head,
             layout : 'layouts',
-            styles : ['/stylesheets/style.css']
+            styles : ['/assets/stylesheets/style.css']
         }
         res.render('edit_department', options)
     }
@@ -96,7 +97,8 @@ router.get('/viewAll', async function(req, res, next) {
             title : 'All Departments',
             departmentList : extractDepartmentsToLiteral(allDepartments),
             layout : 'layouts',
-            styles : ['/stylesheets/style.css']
+            styles : ['/assets/stylesheets/style.css'],
+            isAllDepartmentActive: 'active'
         }
         res.render('view_all_departments', options);
     }

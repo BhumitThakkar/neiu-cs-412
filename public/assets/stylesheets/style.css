@@ -1,0 +1,35 @@
+* {
+}
+
+body {
+  font: 14px Lato, Helvetica, Arial, sans-serif;
+  background-color: lightgray;
+}
+
+a {
+  color: mediumblue;
+}
+
+.logo {
+  max-height: 150px;
+}
+
+.logo, header {
+  text-align: center;
+}
+
+header {
+  margin-bottom: 30px;
+}
+
+.navbar-text{
+  font-size: x-large;
+}
+
+.navbar-toggler{
+  margin: 5px 0px 5px 0px;
+}
+
+.nav-item{
+  margin: 10px;
+}

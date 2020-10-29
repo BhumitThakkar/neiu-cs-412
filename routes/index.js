@@ -7,7 +7,8 @@ router.get('/', async function(req, res, next) {
         title : 'ProfileHunt',
         appName : 'ProfileHunt',
         layout : 'layouts',
-        styles : ['/stylesheets/style.css']
+        styles : ['/assets/stylesheets/style.css'],
+        isHomeActive: "active"
     }
     res.render('index', options);
 });

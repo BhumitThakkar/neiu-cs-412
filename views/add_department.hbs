@@ -1,14 +1,37 @@
 <form method="post" action="/departments/save">
-    <input type="hidden" name="saveMethod" value="{{#if isCreate }}create{{ else }}update{{/if }}">
-    <p>
-        Key: {{ departmentKey }}
-        <input type="hidden" name="departmentKey" value="{{ departmentKey }}"/>
-    </p>
-    <p>
-        Department Name: <input type="text" name="departmentName"/> <br/>
-    </p>
-    <p>
-        Department Head: <input type="text" name="departmentHead"/> <br/>
-    </p>
-    <input type="submit" value="Submit">
+    <div class="container-fluid">
+        <input type="hidden" name="saveMethod" value="{{#if isCreate }}create{{ else }}update{{/if }}">
+
+        <div class="form-group row justify-content-center">
+            <div class="col-md-2 col-5 text-right font-weight-bold">
+                <label class="col-form-label" for="key">Key:</label>
+            </div>
+            <div class="col-md-10 col-7">
+                <label class="col-form-label" for="key">{{ departmentKey }}</label>
+            </div>
+            <input type="hidden" name="departmentKey" value="{{ departmentKey }}"/>
+        </div>
+
+        <div class="form-group row justify-content-center">
+            <div class="col-md-2 col-5 text-right font-weight-bold">
+                <label class="col-form-label" for="departmentName">Department Name:</label>
+            </div>
+            <div class="col-md-10 col-7">
+                <input class="form-control" type="text" name="departmentName"/>
+            </div>
+        </div>
+
+        <div class="form-group row justify-content-center">
+            <div class="col-md-2 col-5 text-right font-weight-bold">
+                <label class="col-form-label" for="departmentHead">Department Head:</label>
+            </div>
+            <div class="col-md-10 col-7">
+                <input class="form-control" type="text" name="departmentHead"/>
+            </div>
+        </div>
+
+        <div class="form-group row justify-content-center">
+            <input class="col-3 col-md-2 btn btn-light" type="submit" value="Submit">
+        </div>
+    </div>
 </form>
