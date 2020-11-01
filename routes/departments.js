@@ -7,8 +7,9 @@ router.get('/add', async function(req, res, next) {
     try{
         let options = {
             isCreate: true,
+            tab_title: "ProfileHunt",
             title : 'Add Department',
-            departmentKey : await departmentsStore.count(),
+            departmentKey : await departmentsStore.nextSafeID(),                 // new Key
             layout : 'layouts',
             styles : ['/assets/stylesheets/style.css'],
             isAddDepartmentActive: 'active'
@@ -40,6 +41,7 @@ router.get('/view', async function(req, res, next) {
     try{
         let department = await departmentsStore.read(req.query.key)
         let options = {
+            tab_title: "ProfileHunt",
             title : 'View Department',
             departmentKey : department.key,
             departmentName : department.name,
@@ -60,6 +62,7 @@ router.get('/edit', async function(req, res, next) {
         let department = await departmentsStore.read(req.query.key)
         let options = {
             isCreate: false,
+            tab_title: "ProfileHunt",
             title : 'Edit Department',
             departmentKey : department.key,
             departmentName : department.name,
@@ -88,14 +91,11 @@ router.get('/destroy', async function(req, res, next) {
 // Viewing All Department
 router.get('/viewAll', async function(req, res, next) {
     try {
-        let keyList = await departmentsStore.keyList()
-        let keyPromises = keyList.map(key => {
-            return departmentsStore.read(key)
-        })
-        let allDepartments = await Promise.all(keyPromises)
+        let AllDepartments = await departmentsStore.findAllDepartments()
         let options = {
+            tab_title: "ProfileHunt",
             title : 'All Departments',
-            departmentList : extractDepartmentsToLiteral(allDepartments),
+            departmentList : AllDepartments,
             layout : 'layouts',
             styles : ['/assets/stylesheets/style.css'],
             isAllDepartmentActive: 'active'
@@ -106,15 +106,5 @@ router.get('/viewAll', async function(req, res, next) {
         next(err)
     }
 })
-
-function extractDepartmentsToLiteral(allDepartments){
-    return allDepartments.map(department => {
-        return {
-            key: department.key,
-            name: department.name,
-            head: department.head,
-        }
-    })
-}
 
 module.exports = router

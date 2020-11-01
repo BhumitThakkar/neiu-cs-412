@@ -5,8 +5,8 @@ const cookieParser = require('cookie-parser')
 const http = require('http')
 const hbs = require('express-handlebars')
 
-const InMemoryDepartmentsStore = require('./models/departments-memory').InMemoryDepartmentsStore
-let departmentsStore = new InMemoryDepartmentsStore()
+const MongooseDepartmentsStore = require('./models/departments-mongoose').MongooseDepartmentsStore
+let departmentsStore = new MongooseDepartmentsStore()
 exports.departmentsStore = departmentsStore
 
 const appsupport = require('./appsupport')
