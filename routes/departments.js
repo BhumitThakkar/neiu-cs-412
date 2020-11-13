@@ -1,20 +1,11 @@
 const express = require('express');
 const router = express.Router();
-let departmentsStore = require('../app').departmentsStore
+let { departmentValidations, departmentsController } = require('../controllers/departments-controller')
 
 // Adding Department - GET
 router.get('/add', async function(req, res, next) {
     try{
-        let options = {
-            isCreate: true,
-            tab_title: "ProfileHunt",
-            title : 'Add Department',
-            departmentKey : await departmentsStore.nextSafeID(),                 // new Key
-            layout : 'layouts',
-            styles : ['/assets/stylesheets/style.css'],
-            isAddDepartmentActive: 'active'
-        }
-        res.render('add_department', options)
+        let department = await departmentsController.getAddDepartment(req, res, next)
     }
     catch (err){
         next(err)
@@ -22,14 +13,13 @@ router.get('/add', async function(req, res, next) {
 })
 
 // Adding-Editing Department - POST
-router.post('/save', async (req, res, next) => {
+router.post('/save', departmentValidations, async (req, res, next) => {
     try{
         let department
         if(req.body.saveMethod === 'create')
-            department = await departmentsStore.create(req.body.departmentKey, req.body.departmentName, req.body.departmentHead)
+            department = await departmentsController.create(req, res, next)
         else
-            department = await departmentsStore.update(req.body.departmentKey, req.body.departmentName, req.body.departmentHead)
-        res.redirect('/departments/view?key='+req.body.departmentKey)
+            department = await departmentsController.update(req, res, next)
     }
     catch (err){
         next(err)
@@ -39,17 +29,7 @@ router.post('/save', async (req, res, next) => {
 // Viewing Specific Department
 router.get('/view', async function(req, res, next) {
     try{
-        let department = await departmentsStore.read(req.query.key)
-        let options = {
-            tab_title: "ProfileHunt",
-            title : 'View Department',
-            departmentKey : department.key,
-            departmentName : department.name,
-            departmentHead : department.head,
-            layout : 'layouts',
-            styles : ['/assets/stylesheets/style.css']
-        }
-        res.render('view_department', options)
+        let department = await departmentsController.view(req, res, next)
     }
     catch (err){
         next(err)
@@ -59,18 +39,7 @@ router.get('/view', async function(req, res, next) {
 // Editing Department - GET
 router.get('/edit', async function(req, res, next) {
     try{
-        let department = await departmentsStore.read(req.query.key)
-        let options = {
-            isCreate: false,
-            tab_title: "ProfileHunt",
-            title : 'Edit Department',
-            departmentKey : department.key,
-            departmentName : department.name,
-            departmentHead : department.head,
-            layout : 'layouts',
-            styles : ['/assets/stylesheets/style.css']
-        }
-        res.render('edit_department', options)
+        let department = await departmentsController.getEditDepartment(req, res, next)
     }
     catch (err){
         next(err)
@@ -80,8 +49,7 @@ router.get('/edit', async function(req, res, next) {
 // Deleting Department
 router.get('/destroy', async function(req, res, next) {
     try{
-        let department = await departmentsStore.destroy(req.query.key)
-        res.redirect('/departments/viewAll')
+        let department = await departmentsController.destroy(req, res, next)
     }
     catch (err){
         next(err)
@@ -91,16 +59,7 @@ router.get('/destroy', async function(req, res, next) {
 // Viewing All Department
 router.get('/viewAll', async function(req, res, next) {
     try {
-        let AllDepartments = await departmentsStore.findAllDepartments()
-        let options = {
-            tab_title: "ProfileHunt",
-            title : 'All Departments',
-            departmentList : AllDepartments,
-            layout : 'layouts',
-            styles : ['/assets/stylesheets/style.css'],
-            isAllDepartmentActive: 'active'
-        }
-        res.render('view_all_departments', options);
+        let AllDepartments = await departmentsController.getAllDepartments(req, res, next)
     }
     catch (err) {
         next(err)

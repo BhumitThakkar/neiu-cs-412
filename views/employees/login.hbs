@@ -1,0 +1,17 @@
+<div class="container-fluid mt-2">
+    <div class="row justify-content-center">
+        <h2>Employee Login</h2>
+    </div>
+</div>
+
+<div class="container-fluid m-2">
+    {{> flash_messages }}
+</div>
+
+<form method="post" action="/employees/login">
+    <div class="container-fluid">
+        <input type="hidden" name="saveMethod" value="{{#if isCreate }}create{{ else }}update{{/if }}">
+
+        {{> login_register_common }}
+    </div>
+</form>
