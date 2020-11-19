@@ -1,5 +1,6 @@
 let Employee = require('../models/employee').Employee
 const { body, validationResult } = require('express-validator')
+const passport = require('passport')
 
 exports.employeeController = {
     create : async (req, res, next) => {
@@ -10,37 +11,31 @@ exports.employeeController = {
         } else {
             try{
                 let employeeParams = getEmployeeParams(req.body)
-                let employee = await Employee.create(employeeParams)
+                let newEmployee = new Employee(employeeParams)
+                let employee = await Employee.register(newEmployee, req.body.password)
                 req.flash('success', `${employee.fullName}'s account created successfully.`)
-                res.redirect('/')
+                res.redirect('/employees/login')
             } catch (err) {
-                console.log(`Error saving employee: ${err.message}`)
                 req.flash('error', `Failed to create account because ${err.message}.`)
                 res.redirect('/employees/register')
             }
         }
     },
     authenticate: async (req, res, next) => {
-        const errors = validationResult(req)
-        if(!errors.isEmpty()){
-            req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
-            res.redirect('/employees/login')
-        } else {
-            try {
-                let employee = await Employee.findOne({email: req.body.email})
-                if (employee && await employee.passwordComparison(req.body.password)) {
-                    req.flash('success', `${employee.fullName} logged in successfully.`)
-                    res.redirect('/')
-                } else {
-                    req.flash('error', 'Your email or password is incorrect. Please try again or contact your system administrator.')
-                    res.redirect('/employees/login')
-                }
-            } catch (err) {
-                console.log(`Error authenticating employee: ${err.message}`)
-                req.flash('error', 'Your email or password is incorrect. Please try again or contact your system administrator.')
-                res.redirect('/employees/login')
+        await passport.authenticate('local', function (err, employee, info){
+            if(err)
+                return next(err)
+            if(!employee){
+                req.flash('error', 'Failed to login')
+                return res.redirect('back')                             // back - keyword to go back where we were
             }
-        }
+            req.logIn(employee, function (err){
+                if(err)
+                    return next(err)
+                req.flash('success', `${employee.fullName} logged in!`)
+                return res.redirect('/')
+            })
+        })(req, res, next);
     },
     getSignup: async (req, res, next) => {
         try {

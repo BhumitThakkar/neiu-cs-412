@@ -1,0 +1,36 @@
+<div class="container-fluid mt-2">
+    <div class="row justify-content-center">
+        <h2>All Skills</h2>
+    </div>
+</div>
+
+<div class="container-fluid m-2">
+    {{> flash_messages }}
+</div>
+
+<div class="container-fluid">
+    {{#if skillList}}
+    <div class="row row-cols-8 justify-content-center">
+        <div class="col-12 col-md-5 btn-group-vertical" role="group">
+        {{#each skillList}}
+            <span class="mt-3 btn btn-lg btn-block btn-outline-dark">
+                {{ name }}
+                <i class="ml-2 float-right text-danger" onclick="setData('{{objId}}')" data-feather="trash"></i>
+                <a href="/skills/edit?objId={{ objId }}"><i class="ml-2 float-right text-info" data-feather="edit"></i></a>
+            </span>
+        {{/each}}
+        {{else}}
+            <h3 class="text-danger text-center">No Skills to List</h3>
+        </div>
+    </div>
+    <input type="hidden" id="setKey" value="">
+    {{/if}}
+</div>
+
+<script>
+    function setData(objId){
+        if (confirm("Are you sure you want to delete?")) {
+            window.location.href = "/skills/destroy?objId="+objId
+        }
+    }
+</script>

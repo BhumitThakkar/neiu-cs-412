@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const SchemaTypes = mongoose.SchemaTypes
+const passportLocalMongoose = require('passport-local-mongoose')
 const bcrypt = require('bcrypt')
 
 const EmployeeSchema = new Schema({
@@ -37,41 +39,37 @@ const EmployeeSchema = new Schema({
         minLength: [5, "Minimum Job Role length is 5."],
         trim: true,
     },
-    email: {
-        type: String,
-        required: [true, 'Email is required.'],
-        unique: true,
-        trim: true,
-    },
-    password: {
-        type: String,
-        minLength: [8, "Minimum Password length is 8."],
-        required: [true, 'Password is required.'],
-        trim: true,
-    }
+    skills: [
+        {
+            type: SchemaTypes.ObjectID,
+            ref: 'Skill'
+        }
+    ]
 })
 
 EmployeeSchema.virtual('fullName').get(function(){
     return `${this.name.first} ${this.name.last}`
 })
 
+EmployeeSchema.set('toJSON', {getters: true, virtuals: true})
+EmployeeSchema.set('toObject', {getters: true, virtuals: true})
+
 EmployeeSchema.pre('save', async function(next){
     let employee = this
     try {
         let phNumber = employee.phNumber.toString()
-        console.log(typeof (employee.phNumber.toString()) )
+        console.log(typeof phNumber)
         employee.phNumber = await bcrypt.hash(phNumber, 10)
+        console.log(employee.phNumber)
         employee.jobTitle = await bcrypt.hash(employee.jobTitle, 10)
         employee.jobRole = await bcrypt.hash(employee.jobRole, 10)
-        employee.password = await bcrypt.hash(employee.password, 10)
     } catch (err) {
         console.log(`Error in hashing password: ${err.message}`)
     }
 })
 
-EmployeeSchema.methods.passwordComparison = async function(inputPassword) {
-    let employee = this
-    return await bcrypt.compare(inputPassword, employee.password)
-}
+EmployeeSchema.plugin(passportLocalMongoose, {
+    usernameField: 'email'
+})
 
 exports.Employee = mongoose.model('employees', EmployeeSchema)

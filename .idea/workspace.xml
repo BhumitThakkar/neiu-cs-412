@@ -1,68 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
-  <component name="BranchesTreeState">
-    <expand>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </expand>
-    <select />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="HW 10B">
-      <change afterPath="$PROJECT_DIR$/controllers/departments-controller.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/employee-controller.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/employee.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/employees.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/employees/login.hbs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/employees/register.hbs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/partials/flash_messages.hbs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/partials/login_register_common.hbs" afterDir="false" />
+    <list default="true" id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="HW 11">
+      <change afterPath="$PROJECT_DIR$/controllers/skills-controller.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/skills.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/skills.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/skills/add_skill.hbs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/skills/edit_skill.hbs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/skills/view_all_skills.hbs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/departments-mongoose.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/departments.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/departments.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/employee-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/employee-controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/employee.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/employee.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/departments.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/departments.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/add_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/add_department.hbs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/edit_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/edit_department.hbs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.hbs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/layouts/layouts.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/layouts/layouts.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/departments/view_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/view_department.hbs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/partials/header.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/partials/header.hbs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/view_all_departments.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/view_all_departments.hbs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/view_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/view_department.hbs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="CSS File" />
-        <option value="JavaScript File" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1it6CAcWEVixYXafqTWqGmmCNxK" />
+  <component name="ProjectId" id="1kWaIAE6H1eipeBvS7VFGw32Fo5" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -70,33 +36,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="javascript.nodejs.core.library.configured.version" value="12.18.3" />
-    <property name="javascript.nodejs.core.library.typings.version" value="12.12.67" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="nodejs_interpreter_path" value="node" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Week 11 - Data Storage-Persistence, Part 2/HW/ProfileHunt/ProfileHunt" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Study\Masters - NEIU\Sem 4\CS 412\ProfileHunt\views\departments" />
-      <recent name="D:\Study\Masters - NEIU\Sem 4\CS 412\ProfileHunt\public\assets" />
-      <recent name="D:\Study\Masters - NEIU\Sem 4\CS 412\Project\ProfileHunt\views\layouts" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\thakk\OneDrive\Desktop\Week 8\ProfileHunt\public\images" />
-      <recent name="D:\Study\Masters - NEIU\Sem 4\CS 412\Project\ProfileHunt\public\images" />
-    </key>
-  </component>
   <component name="RunManager" selected="npm.start-watch">
-    <configuration name="app.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="app.js" working-dir="$PROJECT_DIR$">
-      <envs>
-        <env name="DEBUG" value="profilehunt:*" />
-      </envs>
-      <method v="2" />
-    </configuration>
-    <configuration name="departments-mongoose.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/models/departments-mongoose.js" working-dir="$PROJECT_DIR$/models">
+    <configuration name="app.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="app.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="start-watch" type="js.build_tools.npm">
@@ -107,145 +53,70 @@
       </scripts>
       <node-interpreter value="project" />
       <envs>
-        <env name="DB_URL" value="mongodb+srv://admin:T7sa8YcjgydWaqjE@app-cluster.ywui3.mongodb.net/profilehunt_db?retryWrites=true&amp;w=majority" />
+        <env name="DB_URL" value="mongodb+srv://admin:wbwjZPyyMeGfHZQs@app-cluster.ywui3.mongodb.net/profilehunt_db?retryWrites=true&amp;w=majority" />
         <env name="SECRET" value="secret_passcode" />
       </envs>
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Node.js.app.js" />
-      <item itemvalue="Node.js.departments-mongoose.js" />
       <item itemvalue="npm.start-watch" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.departments-mongoose.js" />
+        <item itemvalue="Node.js.app.js" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="" />
-      <created>1602714410955</created>
+      <changelist id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="HW 11" />
+      <created>1605819037623</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1602714410955</updated>
-      <workItem from="1602714412087" duration="1638000" />
-      <workItem from="1602721980300" duration="5802000" />
-      <workItem from="1603300042396" duration="11724000" />
-      <workItem from="1603321455774" duration="4823000" />
-      <workItem from="1603914040557" duration="16724000" />
-      <workItem from="1603946732982" duration="915000" />
-      <workItem from="1604261050416" duration="12038000" />
-      <workItem from="1605108905782" duration="26377000" />
-      <workItem from="1605142614146" duration="1316000" />
-      <workItem from="1605144037986" duration="6070000" />
-      <workItem from="1605223486564" duration="8785000" />
+      <updated>1605819037623</updated>
+      <workItem from="1605819038699" duration="37000" />
+      <workItem from="1605825630779" duration="866000" />
+      <workItem from="1605826547786" duration="563000" />
+      <workItem from="1605827351381" duration="213000" />
     </task>
-    <task id="LOCAL-00001" summary="HW 09">
-      <created>1603930068481</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1603930068481</updated>
-    </task>
-    <task id="LOCAL-00002" summary="HW 09">
-      <created>1603930233880</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1603930233880</updated>
-    </task>
-    <task id="LOCAL-00003" summary="HW 09">
-      <created>1603933351386</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1603933351386</updated>
-    </task>
-    <task id="LOCAL-00004" summary="HW 10">
-      <created>1604272992465</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1604272992465</updated>
-    </task>
-    <task id="LOCAL-00005" summary="HW 10B">
-      <created>1604273133980</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1604273133980</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="HW 09" />
-    <MESSAGE value="HW 10" />
-    <MESSAGE value="HW 10B" />
-    <option name="LAST_COMMIT_MESSAGE" value="HW 10B" />
-  </component>
   <component name="WindowStateProjectService">
-    <state x="784" y="117" width="1092" height="760" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605144151231">
+    <state x="414" y="175" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605827512730">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="784" y="117" width="1092" height="760" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605144151231" />
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1605135820022">
+    <state x="414" y="175" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605827512730" />
+    <state x="827" y="282" key="EnvironmentVariablesDialog" timestamp="1605825935617">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605135820022" />
-    <state x="1197" y="252" key="EnvironmentVariablesDialog" timestamp="1605123692224">
+    <state x="827" y="282" key="EnvironmentVariablesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605825935617" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1605827109780">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1197" y="252" key="EnvironmentVariablesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605123692224" />
-    <state x="740" y="287" key="FileChooserDialogImpl" timestamp="1602727292566">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1605827109780" />
+    <state width="1899" height="282" key="GridCell.Tab.0.bottom" timestamp="1605827565534">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="287" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1602727292566" />
-    <state width="1899" height="282" key="GridCell.Tab.0.bottom" timestamp="1605230918556">
+    <state width="1899" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1605827565534" />
+    <state width="1899" height="282" key="GridCell.Tab.0.center" timestamp="1605827565534">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1605230918556" />
-    <state width="1899" height="282" key="GridCell.Tab.0.center" timestamp="1605230918555">
+    <state width="1899" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1605827565534" />
+    <state width="1899" height="282" key="GridCell.Tab.0.left" timestamp="1605827565534">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1605230918555" />
-    <state width="1899" height="282" key="GridCell.Tab.0.left" timestamp="1605230918555">
+    <state width="1899" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1605827565534" />
+    <state width="1899" height="282" key="GridCell.Tab.0.right" timestamp="1605827565534">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1605230918555" />
-    <state width="1899" height="282" key="GridCell.Tab.0.right" timestamp="1605230918556">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1605230918556" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604273145591">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1604273145591" />
-    <state x="616" y="240" key="run.anything.popup" timestamp="1605137294648">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1605137294648" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1605118452804">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1605118452804" />
+    <state width="1899" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1605827565534" />
   </component>
 </project>

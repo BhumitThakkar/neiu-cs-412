@@ -1,0 +1,29 @@
+<div class="container-fluid mt-2">
+    <div class="row justify-content-center">
+        <h2>Edit Skill</h2>
+    </div>
+</div>
+
+<div class="container-fluid m-2">
+    {{> flash_messages }}
+</div>
+
+<form method="post" action="/skills/save">
+    <div class="container-fluid">
+        <input type="hidden" name="saveMethod" value="{{#if isCreate }}create{{ else }}update{{/if }}">
+        <input type="hidden" name="objId" value="{{ objId }}">
+
+        <div class="form-group row justify-content-center">
+            <div class="col-md-3 col-5 text-right font-weight-bold">
+                <label class="col-form-label" for="skillName">Skill Name:</label>
+            </div>
+            <div class="col-md-4 col-7">
+                <input class="form-control" type="text" name="skillName" value="{{ skillName }}" required/>
+            </div>
+        </div>
+
+        <div class="form-group row justify-content-center">
+            <input class="col-3 col-md-2 btn btn-light" type="submit" value="Submit">
+        </div>
+    </div>
+</form>

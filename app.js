@@ -7,6 +7,8 @@ const session = require('express-session')
 const MemoryStore = require('memorystore')(session)
 const connectFlash = require('connect-flash')
 const mongoose = require('mongoose')
+const passport = require('passport')
+const {Employee} = require('./models/employee')
 
 mongoose.connect(process.env.DB_URL, {
         useNewUrlParser: true,
@@ -21,6 +23,7 @@ const appsupport = require('./appsupport')
 const indexRouter = require('./routes/index')
 const departmentsRouter = require('./routes/departments')
 const employeesRouter = require('./routes/employees')
+const skillsRouter = require('./routes/skills')
 
 const app = express()
 exports.app = app
@@ -49,6 +52,12 @@ app.use(session({
 }))
 app.use(connectFlash())
 
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(Employee.createStrategy())
+passport.serializeUser(Employee.serializeUser())
+passport.deserializeUser(Employee.deserializeUser())
+
 app.use(express.static(path.join(__dirname, 'public')))        // static search starts from public for all request
 app.use('/assets/vendor/bootstrap', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist')))              // static search for specific request
 app.use('/assets/vendor/jquery', express.static(path.join(__dirname, 'node_modules', 'jquery', 'dist')))                    // static search for specific request
@@ -56,6 +65,8 @@ app.use('/assets/vendor/popper.js', express.static(path.join(__dirname, 'node_mo
 app.use('/assets/vendor/feather-icons', express.static(path.join(__dirname, 'node_modules', 'feather-icons', 'dist')))       // static search for specific request
 
 app.use((req, res, next) => {
+    res.locals.loggedIn = req.isAuthenticated()
+    res.locals.employee = req.user ? req.user.toObject() : undefined
     res.locals.flashMessages = req.flash()
     next()
 })
@@ -64,6 +75,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter)
 app.use('/departments', departmentsRouter)
 app.use('/employees', employeesRouter)
+app.use('/skills', skillsRouter)
 
 // Error Handlers
 app.use(appsupport.basicErrorHandler)                           // this is a call back because no rounded brackets for basicErrorHandler
