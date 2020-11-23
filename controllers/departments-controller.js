@@ -63,13 +63,13 @@ exports.departmentsController = {
             let employeeIds = department.employees
             let employeePromises = employeeIds.map(id => Employee.findOne({_id: id}))
             let employees = await Promise.all(employeePromises)
+            console.log(employees)
             const allEmployees = employees.map(employee => {
                 return {
                     employeeId: employee._id,
                     name: employee.fullName
                 }
             })
-            console.log(allEmployees)
             let options = {
                 tab_title: "ProfileHunt",
                 title : 'View Department',

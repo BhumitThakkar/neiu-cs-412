@@ -1,5 +1,6 @@
 let Employee = require('../models/employee').Employee
 let Department = require('../models/departments').Department
+let Skill = require('../models/skills').Skill
 const { body, validationResult } = require('express-validator')
 const passport = require('passport')
 
@@ -49,6 +50,73 @@ exports.employeeController = {
                 return res.redirect('/')
             })
         })(req, res, next);
+    },
+    view : async (req, res, next) => {
+        try{
+            let employee
+            let id
+            if(req.query.objId !== undefined)
+                id = req.query.objId.trim()
+            else
+                id = req.user._id
+            employee = await Employee.findOne({_id : id })
+            employee = await employee.decryptEmployee(employee)
+            employee = getEmployeeFromEmployeeObject(employee)
+            let skillIds = employee.skills
+            let skillPromises = skillIds.map(id => Skill.findOne({_id: id}))
+            let skills = await Promise.all(skillPromises)
+            const allSkills = skills.map(skill => {
+                return {
+                    skillId: skill._id,
+                    name: skill.name
+                }
+            })
+            let department = await Department.findOne({_id: req.user.departmentId})
+            let options = {
+                employee: employee,
+                tab_title: "ProfileHunt",
+                appName :"ProfileHunt",
+                departmentName : department.name,
+                skillList: allSkills,
+                layout : 'layouts',
+                styles : ['/assets/stylesheets/style.css']
+            }
+            if(req.originalUrl === "/"){
+                options.showWelcome = true
+                options.title = "Home"
+            } else{
+                options.showWelcome = false
+                options.title = "View Profile"
+            }
+            res.render('employees/view_employee', options)
+        } catch (err) {
+            console.log(`Something went wrong while fetching employee: ${err.message}`)
+            req.flash('error', `Something went wrong while fetching employee because ${err.message}.`)
+            res.render('error')
+        }
+    },
+    destroy : async (req, res, next) => {
+        try{
+            let redirectTo = '/employees/login'
+            if(req.user.id !== req.query.objId.trim()){
+                redirectTo = 'back'
+            }
+            let employee = await Employee.findOne({_id : req.query.objId.trim()})
+            for(let i = 0; i < employee.skills.length; i++){
+                let deletedSkill = await Skill.deleteOne({_id: employee.skills[i]._id})
+            }
+            let department = await Department.findOne({_id : employee.departmentId})
+            let employeeIndex = department.employees.indexOf(employee.id)
+            department.employees.splice(employeeIndex, 1)
+            const updatedDepartment = await Department.findByIdAndUpdate({_id : department._id}, {employees : department.employees})
+            const deletedEmployee = await Employee.deleteOne({_id : req.query.objId.trim()})           // employee is not returned actually
+            req.flash('success', 'Employee deleted successfully.')
+            res.redirect(redirectTo)
+        } catch (err) {
+            console.log(`Something went wrong while deleting: ${err.message}`)
+            req.flash('error', `Something went wrong while deleting because ${err.message}.`)
+            res.redirect('back')
+        }
     },
     getSignup: async (req, res, next) => {
         try {
@@ -117,6 +185,22 @@ const getEmployeeParams = body => {
         email: body.email,
         password: body.password,
         departmentId: body.departmentId
+    }
+}
+const getEmployeeFromEmployeeObject = employee => {
+    return {
+        name : {
+            first: employee.name.first,
+            last: employee.name.last
+        },
+        phNumber: employee.phNumber,
+        jobTitle: employee.jobTitle,
+        jobRole: employee.jobRole,
+        email: employee.email,
+        password: employee.password,
+        skills: employee.skills,
+        departmentId: employee.departmentId,
+        _id: employee._id
     }
 }
 

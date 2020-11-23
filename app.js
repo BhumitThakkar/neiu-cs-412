@@ -70,7 +70,7 @@ app.use(async (req, res, next) => {
     res.locals.flashMessages = req.flash()
     res.locals.loggedIn = req.isAuthenticated()
     let employee = req.user ? req.user.toObject() : undefined
-    res.locals.employee = employee
+    res.locals.loggedInEmployee = employee
     res.locals.showDepartment = false
     if(employee !== undefined){
         let department = await Department.findOne({name: "HR"})

@@ -73,6 +73,14 @@ EmployeeSchema.pre('save', async function(next){
     }
 })
 
+EmployeeSchema.methods.decryptEmployee = async function(inputEmployee) {
+    let employee = this
+    inputEmployee.phNumber = await bcrypt.compare(inputEmployee.phNumber, employee.phNumber)
+    inputEmployee.jobTitle = await bcrypt.compare(inputEmployee.jobTitle, employee.jobTitle)
+    inputEmployee.jobRole = await bcrypt.compare(inputEmployee.jobRole, employee.jobRole)
+    return inputEmployee
+}
+
 EmployeeSchema.plugin(passportLocalMongoose, {
     usernameField: 'email'
 })

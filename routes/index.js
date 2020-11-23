@@ -5,15 +5,7 @@ let { employeeController } = require('../controllers/employee-controller')
 /* GET home page. */
 router.get('/', async function(req, res, next) {
     if(req.isAuthenticated()) {
-        let options = {
-            tab_title: "ProfileHunt",
-            title : 'Home',
-            appName : 'ProfileHunt',
-            layout : 'layouts',
-            styles : ['/assets/stylesheets/style.css'],
-            isHomeActive: "active"
-        }
-        res.render('index', options);
+        await employeeController.view(req, res, next)
     }
     else{
         await employeeController.getLogin(req, res, next)

@@ -1,3 +1,21 @@
-<h1>{{message}}</h1>
-<h2>{{error.status}}</h2>
-<pre>{{error.stack}}</pre>
+<div class="container-fluid mt-2">
+    <div class="row justify-content-center">
+        <h2>Edit Department</h2>
+    </div>
+</div>
+
+<div class="container-fluid m-2">
+    {{> flash_messages }}
+</div>
+
+{{#if message}}
+    <h1>{{message}}</h1>
+{{/if}}
+
+{{#if error.status}}
+    <h2>{{error.status}}</h2>
+{{/if}}
+
+{{#if error.stack}}
+    <pre>{{error.stack}}</pre>
+{{/if}}

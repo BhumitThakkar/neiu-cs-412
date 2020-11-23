@@ -22,4 +22,22 @@ router.get('/logout', async (req, res, next) => {
     await employeeController.logout(req, res, next)
 })
 
+router.get('/view', async (req, res, next) => {
+    if(req.isAuthenticated()) {
+        await employeeController.view(req, res, next)
+    } else {
+        req.flash('error', 'Please log in.')
+        res.redirect('/employees/login')
+    }
+})
+
+router.get('/destroy', async (req, res, next) => {
+    if(req.isAuthenticated()) {
+        await employeeController.destroy(req, res, next)
+    } else {
+        req.flash('error', 'Please log in.')
+        res.redirect('/employees/login')
+    }
+})
+
 module.exports = router
