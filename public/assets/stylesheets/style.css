@@ -33,3 +33,7 @@ header {
 .nav-item{
   margin: 10px;
 }
+
+.dropdown-item:hover {
+  background: #d3d3d3;
+}

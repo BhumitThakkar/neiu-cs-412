@@ -27,6 +27,11 @@ const EmployeeSchema = new Schema({
         unique: true,
         trim: true
     },
+    departmentId: {
+        type: String,
+        required: [true, 'Department is required.'],
+        trim: true
+    },
     jobTitle: {
         type: String,
         required: [true, 'Job Title is required.'],

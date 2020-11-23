@@ -9,6 +9,7 @@ const connectFlash = require('connect-flash')
 const mongoose = require('mongoose')
 const passport = require('passport')
 const {Employee} = require('./models/employee')
+const {Department} = require('./models/departments')
 
 mongoose.connect(process.env.DB_URL, {
         useNewUrlParser: true,
@@ -64,10 +65,17 @@ app.use('/assets/vendor/jquery', express.static(path.join(__dirname, 'node_modul
 app.use('/assets/vendor/popper.js', express.static(path.join(__dirname, 'node_modules', 'popper.js', 'dist', 'umd')))       // static search for specific request
 app.use('/assets/vendor/feather-icons', express.static(path.join(__dirname, 'node_modules', 'feather-icons', 'dist')))       // static search for specific request
 
-app.use((req, res, next) => {
-    res.locals.loggedIn = req.isAuthenticated()
-    res.locals.employee = req.user ? req.user.toObject() : undefined
+app.use(async (req, res, next) => {
     res.locals.flashMessages = req.flash()
+    res.locals.loggedIn = req.isAuthenticated()
+    let employee = req.user ? req.user.toObject() : undefined
+    res.locals.employee = employee
+    res.locals.showDepartment = false
+    if(employee !== undefined){
+        let department = await Department.findOne({name: "HR"})
+        if(employee.departmentId === department.id)
+            res.locals.showDepartment = true
+    }
     next()
 })
 

@@ -1,4 +1,5 @@
 let Employee = require('../models/employee').Employee
+let Department = require('../models/departments').Department
 const { body, validationResult } = require('express-validator')
 const passport = require('passport')
 
@@ -9,6 +10,13 @@ exports.employeeController = {
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
             res.redirect('/employees/register')
         } else {
+            // START: Check if department id is not manipulated on front end.
+            const department = await Department.findOne({_id : req.body.departmentId})
+            if(department === undefined){
+                req.flash('error', 'Department Id manipulated or matching department-id was not found.')
+                res.redirect('/employees/register')
+            }
+            // END: Check if department id is not manipulated on front end.
             try{
                 let employeeParams = getEmployeeParams(req.body)
                 let newEmployee = new Employee(employeeParams)
@@ -39,12 +47,20 @@ exports.employeeController = {
     },
     getSignup: async (req, res, next) => {
         try {
+            const departments = await Department.find({})
+            const AllDepartments = departments.map(department => {
+                return {
+                    objId: department._id,
+                    name: department.name
+                }
+            })
             let options = {
                 isCreate: true,
                 tab_title: "ProfileHunt",
                 title : 'Employee Signup',
+                departmentList : AllDepartments,
                 layout : 'layouts',
-                styles : ['/assets/stylesheets/style.css'],
+                styles : ['/assets/stylesheets/style.css']
             }
             res.render('employees/register', options)
         } catch (err) {
@@ -66,6 +82,21 @@ exports.employeeController = {
             req.flash('error', `Error Getting Login Page because ${err.msg}`)
             res.redirect('/')
         }
+    },
+    logout: async (req, res, next) => {
+        if(req.isAuthenticated()) {
+            req.logout()
+            if(req.isAuthenticated()) {
+                req.flash('error', 'Unable to Log Out.')
+                res.redirect('back')                    // back is keyword to go back to where we were
+            } else {
+                req.flash('success', 'Employee Logged Out Successfully.')
+                res.redirect('/employees/login')
+            }
+        } else {
+            req.flash('error', 'Please log in before trying to logout.')
+            res.redirect('/employees/login')
+        }
     }
 }
 
@@ -79,7 +110,8 @@ const getEmployeeParams = body => {
         jobTitle: body.jobTitle,
         jobRole: body.jobRole,
         email: body.email,
-        password: body.password
+        password: body.password,
+        departmentId: body.departmentObjId
     }
 }
 
@@ -97,6 +129,8 @@ exports.employeeRegistrationValidations = [
         .notEmpty().withMessage('Personal Phone Number is required.')
         .isNumeric().withMessage('Personal Phone Number must be numeric.')
         .isLength({min: 10, max: 10}).withMessage('Personal Phone Number must be 10 characters only.'),
+    body('departmentObjId')
+        .notEmpty().withMessage('Department is required.'),
     body('jobTitle')
         .notEmpty().withMessage('Job Title is required.')
         .isLength({min: 2}).withMessage('Job Title must be at least 2 characters.'),

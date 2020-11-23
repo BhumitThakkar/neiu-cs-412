@@ -41,6 +41,19 @@
 
         <div class="form-group row justify-content-center">
             <div class="col-md-3 col-5 text-right font-weight-bold">
+                <label class="col-form-label" for="departmentObjId">Department:</label>
+            </div>
+            <div class="col-md-4 col-7">
+                <select class="form-control" name="departmentObjId">
+                    {{#each departmentList}}
+                        <option value="{{objId}}">{{ name }}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row justify-content-center">
+            <div class="col-md-3 col-5 text-right font-weight-bold">
                 <label class="col-form-label" for="jobTitle">Job Title:</label>
             </div>
             <div class="col-md-4 col-7">

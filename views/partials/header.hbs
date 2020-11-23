@@ -21,9 +21,24 @@
                 <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/login">Employee Login</a>
                 <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">Employee Signup</a>
             {{else}}
+                {{#if showDepartment}}
+                    <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/add">Add Department</a>
+                    <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/viewAll">All Department</a>
+                {{/if}}
                 <a class="nav-item nav-link btn btn-dark col-auto" href="/skills/add">Add Skill</a>
                 <a class="nav-item nav-link btn btn-dark col-auto" href="/skills/viewAll">All Skills</a>
-                <span class="text-dark col-auto">{{employee.fullName}}</span>
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
+                        {{employee.fullName}} <span class="caret"></span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/employees/logout">Logout<i class="ml-2 pb-1 float-right text-dark" data-feather="log-out"></i></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/">View Profile</a>
+                        <a class="dropdown-item" href="#">Edit Profile</a>
+                    </div>
+                </div>
+                <span class="text-dark col-auto"></span>
             {{/unless}}
         </div>
     </nav>

@@ -18,4 +18,8 @@ router.get('/login', async (req, res, next) => {
     await employeeController.getLogin(req, res, next)
 })
 
+router.get('/logout', async (req, res, next) => {
+    await employeeController.logout(req, res, next)
+})
+
 module.exports = router

@@ -1,3 +1,4 @@
+let Employee = require('../models/employee').Employee
 let Department = require('../models/departments').Department
 const { body, validationResult } = require('express-validator')
 
@@ -10,9 +11,15 @@ exports.departmentsController = {
         } else {
             try{
                 let departmentParams = getDepartmentParams(req.body)
-                let department = await Department.create(departmentParams)
-                req.flash('success', `${department.name} department is created successfully.`)
-                res.redirect('/departments/view?objId='+department._id)
+                let department = await Department.findOne({ name : req.body.departmentName})
+                if(department !== undefined){
+                    req.flash('error', 'Department already exist.')
+                    res.redirect('back')
+                } else {
+                    let department = await Department.create(departmentParams)
+                    req.flash('success', `${department.name} department is created successfully.`)
+                    res.redirect('/departments/view?objId='+department._id)
+                }
             } catch (err) {
                 console.log(`Error saving department: ${err.message}`)
                 req.flash('error', `Failed to create department because ${err.message}.`)
@@ -28,9 +35,21 @@ exports.departmentsController = {
         } else {
             try{
                 let departmentParams = getDepartmentParams(req.body)
-                let department = await Department.findOneAndUpdate({ _id : req.body.objId.trim()}, departmentParams)
-                req.flash('success', `${department.name} department is updated successfully.`)
-                res.redirect('/departments/view?objId='+department._id)
+                let department = await Department.findOne({ _id : req.body.objId.trim()})
+                if(department.name === "HR" && req.body.departmentName !== "HR") {
+                    req.flash('error', 'HR department-name can never be edited.')
+                    res.redirect('back')
+                } else {
+                    let department = await Department.findOne({ name : req.body.departmentName})
+                    if(department !== undefined){
+                        req.flash('error', 'Department already exist.')
+                        res.redirect('back')
+                    } else {
+                        let department = await Department.findOneAndUpdate({_id: req.body.objId.trim()}, departmentParams)
+                        req.flash('success', `${department.name} department is updated successfully.`)
+                        res.redirect('/departments/view?objId=' + department._id)
+                    }
+                }
             } catch (err) {
                 console.log(`Error updating department: ${err.message}`)
                 req.flash('error', `Failed to update department because ${err.message}.`)
@@ -79,9 +98,21 @@ exports.departmentsController = {
     },
     destroy : async (req, res, next) => {
         try{
-            const department = await Department.deleteOne({_id : req.query.objId.trim()})           // department is not returned actually
-            req.flash('success', 'Department deleted successfully.')
-            res.redirect('/departments/viewAll')
+            let department =await Department.findById({_id : req.query.objId.trim()})
+            if(department.name === "HR"){
+                req.flash('error', 'HR department cannot be deleted ever.')
+                res.redirect('back')                    // back - keyword to go back to where we were
+            } else {
+                let deletedEmployees = await Employee.deleteMany({"departmentId": department._id})
+                if(deletedEmployees.acknowledged === false){
+                    req.flash('error', `Something went wrong while deleting employees under ${department.departmentName} department. Can't delete department.`)
+                    res.redirect('back')                    // back - keyword to go back to where we were
+                } else {
+                    const deletedDepartment = await Department.deleteOne({_id : req.query.objId.trim()})           // department is not returned actually
+                    req.flash('success', `Department deleted successfully. ${deletedEmployees.deletedCount} employees removed.`)
+                    res.redirect('/departments/viewAll')
+                }
+            }
         } catch (err) {
             console.log(`Something went wrong while deleting: ${err.message}`)
             req.flash('error', `Something went wrong while deleting because ${err.message}.`)
