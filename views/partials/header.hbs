@@ -34,8 +34,8 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="/employees/logout">Logout<i class="ml-2 pb-1 float-right text-dark" data-feather="log-out"></i></a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/">View Profile</a>
-                        <a class="dropdown-item" href="#">Edit Profile</a>
+                        <a class="dropdown-item" href="/employees/view?objId={{ employee._id }}">View Profile</a>
+                        <a class="dropdown-item" href="/employees/edit?objId={{ employee._id }}">Edit Profile</a>
                     </div>
                 </div>
                 <span class="text-dark col-auto"></span>

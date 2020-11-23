@@ -16,7 +16,7 @@ router.get('/', async function(req, res, next) {
         res.render('index', options);
     }
     else{
-        await employeeController.getSignup(req, res, next)
+        await employeeController.getLogin(req, res, next)
     }
 })
 

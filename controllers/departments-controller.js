@@ -12,7 +12,7 @@ exports.departmentsController = {
             try{
                 let departmentParams = getDepartmentParams(req.body)
                 let department = await Department.findOne({ name : req.body.departmentName})
-                if(department !== undefined){
+                if(department !== null){
                     req.flash('error', 'Department already exist.')
                     res.redirect('back')
                 } else {
@@ -60,12 +60,23 @@ exports.departmentsController = {
     view : async (req, res, next) => {
         try{
             const department = await Department.findOne({_id : req.query.objId.trim()})
+            let employeeIds = department.employees
+            let employeePromises = employeeIds.map(id => Employee.findOne({_id: id}))
+            let employees = await Promise.all(employeePromises)
+            const allEmployees = employees.map(employee => {
+                return {
+                    employeeId: employee._id,
+                    name: employee.fullName
+                }
+            })
+            console.log(allEmployees)
             let options = {
                 tab_title: "ProfileHunt",
                 title : 'View Department',
                 objId : department._id,
                 departmentName : department.name,
                 departmentHead : department.head,
+                employeeList : allEmployees,
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css']
             }
@@ -109,7 +120,7 @@ exports.departmentsController = {
                     res.redirect('back')                    // back - keyword to go back to where we were
                 } else {
                     const deletedDepartment = await Department.deleteOne({_id : req.query.objId.trim()})           // department is not returned actually
-                    req.flash('success', `Department deleted successfully. ${deletedEmployees.deletedCount} employees removed.`)
+                    req.flash('success', `Department deleted successfully. ${deletedEmployees.deletedCount} employee(s) removed.`)
                     res.redirect('/departments/viewAll')
                 }
             }

@@ -6,23 +6,28 @@ const passport = require('passport')
 exports.employeeController = {
     create : async (req, res, next) => {
         const errors = validationResult(req)
+        let department
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
             res.redirect('/employees/register')
         } else {
-            // START: Check if department id is not manipulated on front end.
-            const department = await Department.findOne({_id : req.body.departmentId})
-            if(department === undefined){
-                req.flash('error', 'Department Id manipulated or matching department-id was not found.')
-                res.redirect('/employees/register')
-            }
-            // END: Check if department id is not manipulated on front end.
-            try{
-                let employeeParams = getEmployeeParams(req.body)
-                let newEmployee = new Employee(employeeParams)
-                let employee = await Employee.register(newEmployee, req.body.password)
-                req.flash('success', `${employee.fullName}'s account created successfully.`)
-                res.redirect('/employees/login')
+            try {
+                // START: Check if department id is not manipulated on front end.
+                department = await Department.findOne({_id: req.body.departmentId})
+                if (department === undefined) {
+                    req.flash('error', 'Department Id manipulated or matching department-id was not found.')
+                    res.redirect('/employees/register')
+                }
+                // END: Check if department id is not manipulated on front end.
+                else {
+                    let employeeParams = getEmployeeParams(req.body)
+                    let newEmployee = new Employee(employeeParams)
+                    let employee = await Employee.register(newEmployee, req.body.password)
+                    department.employees.push(employee._id)
+                    department = await Department.findByIdAndUpdate({_id: department._id}, {employees: department.employees}, {new: true})             // new:true ensures updated department is returned
+                    req.flash('success', `${employee.fullName}'s account created successfully.`)
+                    res.redirect('/employees/login')
+                }
             } catch (err) {
                 req.flash('error', `Failed to create account because ${err.message}.`)
                 res.redirect('/employees/register')
@@ -111,7 +116,7 @@ const getEmployeeParams = body => {
         jobRole: body.jobRole,
         email: body.email,
         password: body.password,
-        departmentId: body.departmentObjId
+        departmentId: body.departmentId
     }
 }
 
@@ -129,7 +134,7 @@ exports.employeeRegistrationValidations = [
         .notEmpty().withMessage('Personal Phone Number is required.')
         .isNumeric().withMessage('Personal Phone Number must be numeric.')
         .isLength({min: 10, max: 10}).withMessage('Personal Phone Number must be 10 characters only.'),
-    body('departmentObjId')
+    body('departmentId')
         .notEmpty().withMessage('Department is required.'),
     body('jobTitle')
         .notEmpty().withMessage('Job Title is required.')

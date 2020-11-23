@@ -26,18 +26,46 @@
             <label class="col-form-label" for="departmentHead">{{ departmentHead }}</label>
         </div>
     </div>
-    <hr/>
 
     <div class="row justify-content-center">
-        <a class="col-6 col-md-2"><span onclick="setData('{{objId}}')" class="btn btn-light">Delete Department</span></a>
+        <a class="col-6 col-md-2"><span onclick="setData('{{objId}}', 'Department')" class="btn btn-light">Delete Department</span></a>
         <a class="col-6 col-md-2" href="/departments/edit?objId={{ objId }}"><span class="btn btn-light">Edit Department</span></a>
+    </div>
+    <hr/>
+</div>
+
+<div class="container-fluid mt-2">
+    <div class="row justify-content-center">
+        <h2>Employees in {{departmentName}} department</h2>
     </div>
 </div>
 
+<div>
+    {{#if employeeList}}
+    <div class="row row-cols-8 justify-content-center">
+        <div class="col-12 col-md-5 btn-group-vertical" role="group">
+            {{#each employeeList}}
+                <span class="mt-3 btn btn-lg btn-block btn-outline-dark">
+                    {{ name }}
+                    <i class="ml-2 float-right text-danger" onclick="setData('{{employeeId}}', 'Employee')" data-feather="trash"></i>
+                    <a href="/employees/edit?objId={{ employeeId }}"><i class="ml-2 float-right text-info" data-feather="edit"></i></a>
+                    <a href="/employees/view?objId={{ employeeId }}"><i class="ml-2 float-right text-secondary" data-feather="eye"></i></a>
+                </span>
+            {{/each}}
+        {{else}}
+            <h3 class="text-danger text-center">No Employees to List</h3>
+        </div>
+    </div>
+    {{/if}}
+</div>
+
 <script>
-    function setData(objId){
+    function setData(objId, entity){
         if (confirm("Are you sure you want to delete?")) {
-            window.location.href = "/departments/destroy?objId="+objId
+            if(entity === 'Department')
+                window.location.href = "/departments/destroy?objId="+objId
+            else
+                window.location.href = "/employees/destroy?objId="+objId
         }
     }
 </script>

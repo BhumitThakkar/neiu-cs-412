@@ -66,6 +66,7 @@ app.use('/assets/vendor/popper.js', express.static(path.join(__dirname, 'node_mo
 app.use('/assets/vendor/feather-icons', express.static(path.join(__dirname, 'node_modules', 'feather-icons', 'dist')))       // static search for specific request
 
 app.use(async (req, res, next) => {
+    req.baseUrl
     res.locals.flashMessages = req.flash()
     res.locals.loggedIn = req.isAuthenticated()
     let employee = req.user ? req.user.toObject() : undefined
@@ -73,8 +74,14 @@ app.use(async (req, res, next) => {
     res.locals.showDepartment = false
     if(employee !== undefined){
         let department = await Department.findOne({name: "HR"})
-        if(employee.departmentId === department.id)
+        if(employee.departmentId === department.id){
             res.locals.showDepartment = true
+        } else {
+            if(req.originalUrl.startsWith('/departments')) {
+                req.flash('error','Contact system administrator to access department.')
+                res.redirect('back');
+            }
+        }
     }
     next()
 })

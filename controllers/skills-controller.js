@@ -10,12 +10,23 @@ exports.skillsController = {
             res.redirect('/skills/add')
         } else {
             try{
+                let skillIds = req.user.skills
+                let skillPromises = skillIds.map(id => Skill.findOne({_id: id}))
+                let skills = await Promise.all(skillPromises)
+                const employeeSkillNames = skills.map(skill => {
+                    return skill.name
+                })
                 let skillParams = getSkillParams(req.body)
-                let skill = await Skill.create(skillParams)
-                req.user.skills.push(skill._id)
-                req.user = await Employee.findByIdAndUpdate({_id:req.user._id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
-                req.flash('success', `${skill.name} skill is created successfully.`)
-                res.redirect('/skills/viewAll')
+                if(employeeSkillNames.indexOf(skillParams.name) !== -1){
+                    req.flash('error', 'Skill already exist.')
+                    res.redirect('back')
+                } else {
+                    let skill = await Skill.create(skillParams)
+                    req.user.skills.push(skill._id)
+                    req.user = await Employee.findByIdAndUpdate({_id:req.user._id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
+                    req.flash('success', `${skill.name} skill is created successfully.`)
+                    res.redirect('/skills/viewAll')
+                }
             } catch (err) {
                 console.log(`Error saving skill: ${err.message}`)
                 req.flash('error', `Failed to create skill because ${err.message}.`)
@@ -29,12 +40,23 @@ exports.skillsController = {
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
             res.redirect('/skills/viewAll')
         } else {
-            try{
+            try {
+                let skillIds = req.user.skills
+                let skillPromises = skillIds.map(id => Skill.findOne({_id: id}))
+                let skills = await Promise.all(skillPromises)
+                const employeeSkillNames = skills.map(skill => {
+                    return skill.name
+                })
                 let skillParams = getSkillParams(req.body)
-                let skill = await Skill.findOneAndUpdate({ _id : req.body.objId.trim()}, skillParams)
-                req.flash('success', `${skill.name} skill is updated successfully.`)
-                res.redirect('/skills/viewAll')
-            } catch (err) {
+                if (employeeSkillNames.indexOf(skillParams.name) !== -1) {
+                    req.flash('error', 'Skill already exist.')
+                    res.redirect('back')
+                } else {
+                    let skill = await Skill.findOneAndUpdate({_id: req.body.objId.trim()}, skillParams)
+                    req.flash('success', `${skill.name} skill is updated successfully.`)
+                    res.redirect('/skills/viewAll')
+                }
+            }catch (err) {
                 console.log(`Error updating skill: ${err.message}`)
                 req.flash('error', `Failed to update skill because ${err.message}.`)
                 res.redirect('/skills/viewAll')
