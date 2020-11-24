@@ -15,7 +15,7 @@ exports.employeeController = {
             try {
                 // START: Check if department id is not manipulated on front end.
                 department = await Department.findOne({_id: req.body.departmentId})
-                if (department === undefined) {
+                if (department === null) {
                     req.flash('error', 'Department Id manipulated or matching department-id was not found.')
                     res.redirect('/employees/register')
                 }
@@ -60,7 +60,7 @@ exports.employeeController = {
             else
                 id = req.user._id
             employee = await Employee.findOne({_id : id })
-            employee = await employee.decryptEmployee(employee)
+            // employee = await employee.decryptEmployee(employee)
             employee = getEmployeeFromEmployeeObject(employee)
             let skillIds = employee.skills
             let skillPromises = skillIds.map(id => Skill.findOne({_id: id}))
@@ -118,6 +118,54 @@ exports.employeeController = {
             res.redirect('back')
         }
     },
+    getEdit: async (req, res, next) => {
+        try {
+            let employee = await Employee.findOne({_id : req.user._id })
+            // employee = employee.decryptEmployee(employee)
+            employee = getEmployeeFromEmployeeObject(employee)
+            let options = {
+                isCreate : false,
+                tab_title : "ProfileHunt",
+                title : 'Edit Employee',
+                employee : employee,
+                layout : 'layouts',
+                styles : ['/assets/stylesheets/style.css']
+            }
+            res.render('employees/edit_employee', options)
+        } catch (err) {
+            req.flash('error', `Error Getting Edit-Employee Page because ${err.msg}`)
+            res.redirect('/')
+        }
+    },
+    edit:async (req, res, next) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+            req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
+            res.redirect('back')
+        } else {
+            try{
+                let employeeParams = getEditEmployeeParams(req.body)
+                let employee = await Employee.findOne({ _id : req.user._id})
+                let existEmailEmployee = await Employee.findOne({ email : req.body.email})
+                let existPhNumberEmployee = await Employee.findOne({ phNumber : req.body.phNumber})
+                if(existEmailEmployee !== null && req.user.email !== req.body.email) {
+                    req.flash('error', 'Employee with given email already exist.')
+                    res.redirect('back')
+                } else if(existPhNumberEmployee !== null && req.user.phNumber !== req.body.phNumber){
+                    req.flash('error', 'Employee with given phNumber already exist.')
+                    res.redirect('back')
+                } else {
+                    employee = await Employee.findOneAndUpdate({_id: req.user._id}, employeeParams)
+                    req.flash('success', `${employee.fullName} employee is updated successfully.`)
+                    res.redirect('/employees/view')
+                }
+            } catch (err) {
+                console.log(`Error updating employee: ${err.message}`)
+                req.flash('error', `Failed to update employee because ${err.message}.`)
+                res.redirect('back')
+            }
+        }
+    },
     getSignup: async (req, res, next) => {
         try {
             const departments = await Department.find({})
@@ -173,6 +221,28 @@ exports.employeeController = {
     }
 }
 
+// const getEditEmployeeParams = body = {
+//     return {
+//         name: {
+//             first: body.first,
+//             last: body.last
+//         },
+//         phNumber: body.phNumber,
+//         email: body.email
+//     }
+// }
+
+function getEditEmployeeParams(body) {
+    return {
+        name: {
+            first: body.first,
+            last: body.last
+        },
+        phNumber: body.phNumber,
+        email: body.email
+    }
+}
+
 const getEmployeeParams = body => {
     return {
         name: {
@@ -187,6 +257,7 @@ const getEmployeeParams = body => {
         departmentId: body.departmentId
     }
 }
+
 const getEmployeeFromEmployeeObject = employee => {
     return {
         name : {
@@ -195,9 +266,8 @@ const getEmployeeFromEmployeeObject = employee => {
         },
         phNumber: employee.phNumber,
         jobTitle: employee.jobTitle,
-        jobRole: employee.jobRole,
+        jobRole: employee.jobRole.replace('\n','<br/>'),
         email: employee.email,
-        password: employee.password,
         skills: employee.skills,
         departmentId: employee.departmentId,
         _id: employee._id
@@ -226,6 +296,22 @@ exports.employeeRegistrationValidations = [
     body('jobRole')
         .notEmpty().withMessage('Job Role is required.')
         .isLength({min: 5}).withMessage('Job Role must be at least 5 characters.'),
+    body('email')
+        .notEmpty().withMessage('Email is required.')
+        .isEmail().normalizeEmail().withMessage('Email is invalid.')
+]
+
+exports.employeeEditValidations = [
+    body('first')
+        .notEmpty().withMessage('First Name is required.')
+        .isLength({min: 2}).withMessage('First name must be at least 2 characters.'),
+    body('last')
+        .notEmpty().withMessage('Last Name is required.')
+        .isLength({min: 2}).withMessage('Last name must be at least 2 characters.'),
+    body('phNumber')
+        .notEmpty().withMessage('Personal Phone Number is required.')
+        .isNumeric().withMessage('Personal Phone Number must be numeric.')
+        .isLength({min: 10, max: 10}).withMessage('Personal Phone Number must be 10 characters only.'),
     body('email')
         .notEmpty().withMessage('Email is required.')
         .isEmail().normalizeEmail().withMessage('Email is invalid.')

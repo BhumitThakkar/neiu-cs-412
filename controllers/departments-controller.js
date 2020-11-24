@@ -41,7 +41,7 @@ exports.departmentsController = {
                     res.redirect('back')
                 } else {
                     let department = await Department.findOne({ name : req.body.departmentName})
-                    if(department !== undefined){
+                    if(department !== null){
                         req.flash('error', 'Department already exist.')
                         res.redirect('back')
                     } else {
@@ -63,7 +63,6 @@ exports.departmentsController = {
             let employeeIds = department.employees
             let employeePromises = employeeIds.map(id => Employee.findOne({_id: id}))
             let employees = await Promise.all(employeePromises)
-            console.log(employees)
             const allEmployees = employees.map(employee => {
                 return {
                     employeeId: employee._id,

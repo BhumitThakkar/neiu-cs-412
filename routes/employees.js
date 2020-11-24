@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-let { employeeRegistrationValidations, employeeLoginValidations, employeeController } = require('../controllers/employee-controller')
+let { employeeRegistrationValidations, employeeLoginValidations, employeeEditValidations, employeeController } = require('../controllers/employee-controller')
 
 router.get('/register', async (req, res, next)=>{
     await employeeController.getSignup(req, res, next)
@@ -34,6 +34,24 @@ router.get('/view', async (req, res, next) => {
 router.get('/destroy', async (req, res, next) => {
     if(req.isAuthenticated()) {
         await employeeController.destroy(req, res, next)
+    } else {
+        req.flash('error', 'Please log in.')
+        res.redirect('/employees/login')
+    }
+})
+
+router.get('/edit', async (req, res, next) => {
+    if(req.isAuthenticated()) {
+        await employeeController.getEdit(req, res, next)
+    } else {
+        req.flash('error', 'Please log in.')
+        res.redirect('/employees/login')
+    }
+})
+
+router.post('/edit', employeeEditValidations, async (req, res, next) => {
+    if(req.isAuthenticated()) {
+        await employeeController.edit(req, res, next)
     } else {
         req.flash('error', 'Please log in.')
         res.redirect('/employees/login')
