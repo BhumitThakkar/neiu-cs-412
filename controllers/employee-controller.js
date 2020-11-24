@@ -24,8 +24,8 @@ exports.employeeController = {
                     let employeeParams = getEmployeeParams(req.body)
                     let newEmployee = new Employee(employeeParams)
                     let employee = await Employee.register(newEmployee, req.body.password)
-                    department.employees.push(employee._id)
-                    department = await Department.findByIdAndUpdate({_id: department._id}, {employees: department.employees}, {new: true})             // new:true ensures updated department is returned
+                    department.employees.push(employee.id)
+                    department = await Department.findByIdAndUpdate({_id: department.id}, {employees: department.employees}, {new: true})             // new:true ensures updated department is returned
                     req.flash('success', `${employee.fullName}'s account created successfully.`)
                     res.redirect('/employees/login')
                 }
@@ -58,7 +58,7 @@ exports.employeeController = {
             if(req.query.objId !== undefined)
                 id = req.query.objId.trim()
             else
-                id = req.user._id
+                id = req.user.id
             employee = await Employee.findOne({_id : id })
             // employee = await employee.decryptEmployee(employee)
             employee = getEmployeeFromEmployeeObject(employee)
@@ -67,7 +67,7 @@ exports.employeeController = {
             let skills = await Promise.all(skillPromises)
             const allSkills = skills.map(skill => {
                 return {
-                    skillId: skill._id,
+                    skillId: skill.id,
                     name: skill.name
                 }
             })
@@ -103,12 +103,17 @@ exports.employeeController = {
             }
             let employee = await Employee.findOne({_id : req.query.objId.trim()})
             for(let i = 0; i < employee.skills.length; i++){
-                let deletedSkill = await Skill.deleteOne({_id: employee.skills[i]._id})
+                let employeeSkill = await Skill.findOne({_id: employee.skills[i]})
+                employeeSkill.employees.splice(employee.id, 1)
+                if(employeeSkill.employees.length > 0)                                    // Skill is attached to at least 1 other employee
+                    await employeeSkill.findByIdAndUpdate({_id:employeeSkill.id}, {employees : employeeSkill.employees})
+                else                                                                      // Skill is now not attached to any employee
+                    await employeeSkill.deleteOne({_id:employeeSkill.id})
             }
             let department = await Department.findOne({_id : employee.departmentId})
             let employeeIndex = department.employees.indexOf(employee.id)
             department.employees.splice(employeeIndex, 1)
-            const updatedDepartment = await Department.findByIdAndUpdate({_id : department._id}, {employees : department.employees})
+            const updatedDepartment = await Department.findByIdAndUpdate({_id : department.id}, {employees : department.employees})
             const deletedEmployee = await Employee.deleteOne({_id : req.query.objId.trim()})           // employee is not returned actually
             req.flash('success', 'Employee deleted successfully.')
             res.redirect(redirectTo)
@@ -120,8 +125,7 @@ exports.employeeController = {
     },
     getEdit: async (req, res, next) => {
         try {
-            let employee = await Employee.findOne({_id : req.user._id })
-            // employee = employee.decryptEmployee(employee)
+            let employee = await Employee.findOne({_id : req.user.id })
             employee = getEmployeeFromEmployeeObject(employee)
             let options = {
                 isCreate : false,
@@ -145,7 +149,7 @@ exports.employeeController = {
         } else {
             try{
                 let employeeParams = getEditEmployeeParams(req.body)
-                let employee = await Employee.findOne({ _id : req.user._id})
+                let employee = await Employee.findOne({ _id : req.user.id})
                 let existEmailEmployee = await Employee.findOne({ email : req.body.email})
                 let existPhNumberEmployee = await Employee.findOne({ phNumber : req.body.phNumber})
                 if(existEmailEmployee !== null && req.user.email !== req.body.email) {
@@ -155,7 +159,7 @@ exports.employeeController = {
                     req.flash('error', 'Employee with given phNumber already exist.')
                     res.redirect('back')
                 } else {
-                    employee = await Employee.findOneAndUpdate({_id: req.user._id}, employeeParams)
+                    employee = await Employee.findOneAndUpdate({_id: req.user.id}, employeeParams)
                     req.flash('success', `${employee.fullName} employee is updated successfully.`)
                     res.redirect('/employees/view')
                 }
@@ -171,7 +175,7 @@ exports.employeeController = {
             const departments = await Department.find({})
             const AllDepartments = departments.map(department => {
                 return {
-                    objId: department._id,
+                    objId: department.id,
                     name: department.name
                 }
             })
@@ -221,17 +225,6 @@ exports.employeeController = {
     }
 }
 
-// const getEditEmployeeParams = body = {
-//     return {
-//         name: {
-//             first: body.first,
-//             last: body.last
-//         },
-//         phNumber: body.phNumber,
-//         email: body.email
-//     }
-// }
-
 function getEditEmployeeParams(body) {
     return {
         name: {
@@ -270,7 +263,7 @@ const getEmployeeFromEmployeeObject = employee => {
         email: employee.email,
         skills: employee.skills,
         departmentId: employee.departmentId,
-        _id: employee._id
+        id: employee.id
     }
 }
 

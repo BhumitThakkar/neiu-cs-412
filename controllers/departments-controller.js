@@ -18,7 +18,7 @@ exports.departmentsController = {
                 } else {
                     let department = await Department.create(departmentParams)
                     req.flash('success', `${department.name} department is created successfully.`)
-                    res.redirect('/departments/view?objId='+department._id)
+                    res.redirect('/departments/view?objId='+department.id)
                 }
             } catch (err) {
                 console.log(`Error saving department: ${err.message}`)
@@ -47,7 +47,7 @@ exports.departmentsController = {
                     } else {
                         let department = await Department.findOneAndUpdate({_id: req.body.objId.trim()}, departmentParams)
                         req.flash('success', `${department.name} department is updated successfully.`)
-                        res.redirect('/departments/view?objId=' + department._id)
+                        res.redirect('/departments/view?objId=' + department.id)
                     }
                 }
             } catch (err) {
@@ -65,14 +65,14 @@ exports.departmentsController = {
             let employees = await Promise.all(employeePromises)
             const allEmployees = employees.map(employee => {
                 return {
-                    employeeId: employee._id,
+                    employeeId: employee.id,
                     name: employee.fullName
                 }
             })
             let options = {
                 tab_title: "ProfileHunt",
                 title : 'View Department',
-                objId : department._id,
+                objId : department.id,
                 departmentName : department.name,
                 departmentHead : department.head,
                 employeeList : allEmployees,
@@ -93,7 +93,7 @@ exports.departmentsController = {
                 isCreate: false,
                 tab_title: "ProfileHunt",
                 title : 'Edit Department',
-                objId: department._id,
+                objId: department.id,
                 departmentName : department.name,
                 departmentHead : department.head,
                 layout : 'layouts',
@@ -113,7 +113,7 @@ exports.departmentsController = {
                 req.flash('error', 'HR department cannot be deleted ever.')
                 res.redirect('back')                    // back - keyword to go back to where we were
             } else {
-                let deletedEmployees = await Employee.deleteMany({"departmentId": department._id})
+                let deletedEmployees = await Employee.deleteMany({"departmentId": department.id})
                 if(deletedEmployees.acknowledged === false){
                     req.flash('error', `Something went wrong while deleting employees under ${department.departmentName} department. Can't delete department.`)
                     res.redirect('back')                    // back - keyword to go back to where we were
@@ -133,7 +133,7 @@ exports.departmentsController = {
         const departments = await Department.find({})
         const AllDepartments = departments.map(department => {
             return {
-                objId: department._id,
+                objId: department.id,
                 name: department.name
             }
         })
