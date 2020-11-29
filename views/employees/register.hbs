@@ -1,6 +1,6 @@
 <div class="container-fluid mt-2">
     <div class="row justify-content-center">
-        <h2>Employee Signup</h2>
+        <h2>{{title}}</h2>
     </div>
 </div>
 
@@ -45,12 +45,29 @@
             </div>
             <div class="col-md-4 col-7">
                 <select class="form-control" name="departmentId">
-                    {{#each departmentList}}
-                        <option value="{{objId}}">{{ name }}</option>
-                    {{/each}}
+                    {{#if departmentList}}
+                        {{#each departmentList}}
+                            <option value="{{objId}}">{{ name }}</option>
+                        {{/each}}
+                    {{else}}
+                        <option value="keep me as it is">HR</option>
+                    {{/if}}
                 </select>
             </div>
         </div>
+
+        {{#unless showAddHR}}
+            <div class="form-group row justify-content-center">
+                <div class="col-md-3 col-5 text-right font-weight-bold">
+                    <label class="col-form-label" for="departmentId">Manager Phone Number:</label>
+                </div>
+                <div class="col-md-4 col-7">
+                    <input class="form-control" type="number" name="managerPhNumber" min="1000000000" max="9999999999" required/>
+                </div>
+            </div>
+        {{else}}
+            <input class="form-control" type="hidden" name="managerPhNumber" value="0123456789" required/>
+        {{/unless}}
 
         <div class="form-group row justify-content-center">
             <div class="col-md-3 col-5 text-right font-weight-bold">

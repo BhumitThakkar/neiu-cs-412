@@ -17,16 +17,16 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <span class="navbar-text col text-left">{{ title }}</span>
-            {{#unless loggedIn}}                                         <!-- loggedIn comes from res.locals.loggedIn from app.js -->
-                <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/login">Employee Login</a>
-                <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">Employee Signup</a>
-            {{else}}
+            {{#if loggedIn}}                                         <!-- loggedIn comes from res.locals.loggedIn from app.js -->
                 {{#if showDepartment}}
                     <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/add">Add Department</a>
                     <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/viewAll">All Department</a>
+                    {{#if showAddCEO}}
+                        <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">Add CEO Employee</a>
+                    {{else}}
+                        <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">Add Employee</a>
+                    {{/if}}
                 {{/if}}
-                <a class="nav-item nav-link btn btn-dark col-auto" href="/skills/add">Add Skill</a>
-                <a class="nav-item nav-link btn btn-dark col-auto" href="/skills/viewAll">All Skills</a>
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
                         {{loggedInEmployee.fullName}} <span class="caret"></span>
@@ -34,12 +34,15 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="/employees/logout">Logout<i class="ml-2 pb-1 float-right text-dark" data-feather="log-out"></i></a>
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/skills/viewAll">View All Skills</a>
+                        <a class="dropdown-item" href="/skills/add">Add Skill</a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/employees/view">View Profile</a>
                         <a class="dropdown-item" href="/employees/edit">Edit Profile</a>
                     </div>
                 </div>
                 <span class="text-dark col-auto"></span>
-            {{/unless}}
+            {{/if}}
         </div>
     </nav>
 

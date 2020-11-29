@@ -2,6 +2,7 @@
  * Normalize a port into a number, string, or false.
  */
 
+const EncryptorDecryptor = require("encrypt_decrypt");
 exports.normalizePort = function (val) {
     const port = parseInt(val, 10)
     if (isNaN(port))
@@ -72,4 +73,12 @@ exports.onListening = function () {
         ? 'pipe ' + addr
         : 'port ' + addr.port
     console.log('Listening on ' + bind)
+}
+
+exports.encryptDecrypt = async function () {
+    let config = {
+        key: 's2#!FSDFSD!@#!~@#ASWS@!@!@#ASWEQ',//encryption and decryption key default key used
+        iv: '1234567890123497'
+    }
+    return new EncryptorDecryptor(config)
 }

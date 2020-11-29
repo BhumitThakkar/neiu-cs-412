@@ -56,23 +56,28 @@ exports.skillsController = {
                     req.flash('error', 'Skill already exist.')
                     res.redirect('back')
                 } else {
-                    req.user.skills.splice(oldSkill.id, 1)                      // old skill removed from employee
-                    oldSkill.employees.splice(req.user.id, 1)                   // employee removed from old skill
-                    if (oldSkill.employees.length > 0){                         // other employees has old skill
-                        oldSkill = await Skill.findOneAndUpdate({_id: req.body.objId.trim()}, skillParams, {new: true})
-                    }
                     let newSkill = await Skill.findOne({name: skillParams.name})
                     if(newSkill === null){
                         newSkill = await Skill.create(skillParams)
                     }
-                    newSkill.employees.push(req.user.id)
+                    let deleteSkillIndex = req.user.skills.indexOf(oldSkill.id)
+                    req.user.skills.splice(deleteSkillIndex, 1)                      // old skill removed from employee
                     req.user.skills.push(newSkill.id)
-                    newSkill = await Skill.findByIdAndUpdate({_id:newSkill.id}, {employees: newSkill.employees}, {new: true})             // new:true ensures updated skill is returned
-                    req.user = await Employee.findByIdAndUpdate({_id:req.user.id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
-                    req.flash('success', `${skill.name} skill is updated successfully.`)
+                    newSkill.employees.push(req.user.id)
+
+                    if (oldSkill.employees.length > 1){                         // other employees has old skill
+                        let deleteEmployeeIndex = req.user.skills.indexOf(req.user.id)
+                        oldSkill.employees.splice(deleteEmployeeIndex, 1)               // employee removed from old skill
+                        oldSkill = await Skill.findOneAndUpdate({_id: oldSkill.id}, {employees: oldSkill.employees}, {new: true})
+                    } else {                                                    // only 1 employee in old skill
+                        oldSkill = await Skill.deleteOne({_id: oldSkill.id})
+                    }
+                    newSkill = await Skill.findByIdAndUpdate({_id: newSkill.id}, {employees: newSkill.employees}, {new: true})             // new:true ensures updated skill is returned
+                    req.user = await Employee.findByIdAndUpdate({_id: req.user.id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
+                    req.flash('success', `${newSkill.name} skill is updated successfully.`)
                     res.redirect('/skills/viewAll')
                 }
-            }catch (err) {
+            } catch (err) {
                 console.log(`Error updating skill: ${err.message}`)
                 req.flash('error', `Failed to update skill because ${err.message}.`)
                 res.redirect('/skills/viewAll')
@@ -100,14 +105,15 @@ exports.skillsController = {
     },
     destroy : async (req, res, next) => {
         try{
-            const skillIndex = req.user.skills.indexOf(req.query.objId.trim())
-            req.user.skills.splice(skillIndex, 1);
+            const deleteSkillIndex = req.user.skills.indexOf(req.query.objId.trim())
+            req.user.skills.splice(deleteSkillIndex, 1)
             req.user = await Employee.findByIdAndUpdate({_id:req.user.id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
             let skill = await Skill.findOne({_id : req.query.objId.trim()})
             if(skill.employees.length === 1)
                 skill = await Skill.deleteOne({_id : req.query.objId.trim()})           // skill is not returned actually
             else{
-                skill.employees.splice(req.user.id, 1)
+                let deleteEmployeeIndex = skill.employees.indexOf(req.user.id)
+                skill.employees.splice(deleteEmployeeIndex, 1)
                 skill = await Skill.findByIdAndUpdate({_id : skill.id}, {employees : skill.employees}, {new: true})
             }
             req.flash('success', 'Skill deleted successfully.')

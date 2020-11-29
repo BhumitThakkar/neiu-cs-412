@@ -74,6 +74,7 @@ app.use(async (req, res, next) => {
     res.locals.showDepartment = false
     if(employee !== undefined){
         let department = await Department.findOne({name: "HR"})
+        res.locals.HRDepartmentId = department.id
         if(employee.departmentId === department.id){
             res.locals.showDepartment = true
         } else {
@@ -83,8 +84,19 @@ app.use(async (req, res, next) => {
             }
         }
     }
+    let employeeCount = await Employee.countDocuments()
+    res.locals.showAddHR = false
+    res.locals.showAddCEO = false
+    if(employeeCount === 0){
+        res.locals.showAddHR = true
+    }
+    else if(employeeCount === 1){
+        res.locals.showAddCEO = true
+    }
     next()
 })
+
+// app.use(appsupport.encryptDecrypt)
 
 // Router function lists
 app.use('/', indexRouter)

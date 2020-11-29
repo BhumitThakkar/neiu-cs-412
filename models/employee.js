@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const SchemaTypes = mongoose.SchemaTypes
 const passportLocalMongoose = require('passport-local-mongoose')
-// const bcrypt = require('bcrypt')
+const encryptDecrypt = require('../appsupport').encryptDecrypt
 
 const EmployeeSchema = new Schema({
     name: {
@@ -32,6 +32,12 @@ const EmployeeSchema = new Schema({
         required: [true, 'Department is required.'],
         trim: true
     },
+    managerId: {
+        type: String,
+        required: [true, 'Manager is required.'],
+        minLength: [2, "Minimum Job Title length is 2."],
+        trim: true
+    },
     jobTitle: {
         type: String,
         required: [true, 'Job Title is required.'],
@@ -42,7 +48,7 @@ const EmployeeSchema = new Schema({
         type: String,
         required: [true, 'Job Role is required.'],
         minLength: [5, "Minimum Job Role length is 5."],
-        trim: true,
+        trim: true
     },
     skills: [
         {
@@ -59,25 +65,38 @@ EmployeeSchema.virtual('fullName').get(function(){
 EmployeeSchema.set('toJSON', {getters: true, virtuals: true})
 EmployeeSchema.set('toObject', {getters: true, virtuals: true})
 
-/*EmployeeSchema.pre('save', async function(next){
-    let employee = this
+EmployeeSchema.pre('save', async function(next){
     try {
-        let phNumber = employee.phNumber.toString()
-        employee.phNumber = await bcrypt.hash(phNumber, 10)
-        employee.jobTitle = await bcrypt.hash(employee.jobTitle, 10)
-        employee.jobRole = await bcrypt.hash(employee.jobRole, 10)
+        let employee = this
+        let edcrypt = await encryptDecrypt()
+        employee.phNumber = edcrypt.encrypt(employee.phNumber)
+        employee.jobTitle = edcrypt.encrypt(employee.jobTitle)
+        employee.jobRole = edcrypt.encrypt(employee.jobRole)
+        next()              // I added next - learnt from hovering on EmployeeSchema.pre()
     } catch (err) {
-        console.log(`Error in bcrypt hashing : ${err.message}`)
+        console.log(`Error in encrypting employee while saving: ${err.message}.`)
     }
 })
 
-EmployeeSchema.methods.decryptEmployee = async function(inputEmployee) {
+EmployeeSchema.methods.encryptEmployeeParams = async function(employeeParam) {
+    let edcrypt = await encryptDecrypt()
+    if(employeeParam.phNumber)
+        employeeParam.phNumber = edcrypt.encrypt(employeeParam.phNumber)
+    if(employeeParam.jobTitle)
+        employeeParam.jobTitle = edcrypt.encrypt(employeeParam.jobTitle)
+    if(employeeParam.jobRole)
+        employeeParam.jobRole = edcrypt.encrypt(employeeParam.jobRole)
+    return employeeParam
+}
+
+EmployeeSchema.methods.decryptEmployee = async function() {
     let employee = this
-    inputEmployee.phNumber = await bcrypt.compare(inputEmployee.phNumber, employee.phNumber)
-    inputEmployee.jobTitle = await bcrypt.compare(inputEmployee.jobTitle, employee.jobTitle)
-    inputEmployee.jobRole = await bcrypt.compare(inputEmployee.jobRole, employee.jobRole)
-    return inputEmployee
-}*/
+    let edcrypt = await encryptDecrypt()
+    employee.phNumber = await edcrypt.decrypt(employee.phNumber)
+    employee.jobTitle = await edcrypt.decrypt(employee.jobTitle)
+    employee.jobRole = await edcrypt.decrypt(employee.jobRole)
+    return employee
+}
 
 EmployeeSchema.plugin(passportLocalMongoose, {
     usernameField: 'email'

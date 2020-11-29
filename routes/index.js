@@ -8,7 +8,10 @@ router.get('/', async function(req, res, next) {
         await employeeController.view(req, res, next)
     }
     else{
-        await employeeController.getLogin(req, res, next)
+        if(res.locals.showAddHR)
+            await employeeController.getSignup(req, res, next)
+        else
+            await employeeController.getLogin(req, res, next)
     }
 })
 

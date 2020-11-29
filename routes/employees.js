@@ -3,7 +3,12 @@ const router = express.Router()
 let { employeeRegistrationValidations, employeeLoginValidations, employeeEditValidations, employeeController } = require('../controllers/employee-controller')
 
 router.get('/register', async (req, res, next)=>{
-    await employeeController.getSignup(req, res, next)
+    if(res.locals.showAddHR || (req.isAuthenticated() && res.locals.showDepartment)) {
+        await employeeController.getSignup(req, res, next)
+    } else {
+        req.flash('error', 'Please log in.')
+        res.redirect('/employees/login')
+    }
 })
 
 router.post('/register', employeeRegistrationValidations, async (req, res, next) => {

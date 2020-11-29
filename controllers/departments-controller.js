@@ -41,7 +41,7 @@ exports.departmentsController = {
                     res.redirect('back')
                 } else {
                     let department = await Department.findOne({ name : req.body.departmentName})
-                    if(department !== null){
+                    if(department !== null && department.name !== "HR"){
                         req.flash('error', 'Department already exist.')
                         res.redirect('back')
                     } else {
