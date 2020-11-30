@@ -87,8 +87,10 @@
     </div>
 
     <div class="row justify-content-center">
+        {{#if canAddEmployee}}
             <a class="col-6 col-md-2"><span onclick="setData('{{employee.id}}')" class="btn btn-light">Delete Profile</span></a>
             <a class="col-6 col-md-2" href="/employees/edit?objId={{ employee.id }}"><span class="btn btn-light">Edit Profile</span></a>
+        {{/if}}
     </div>
     <hr/>
 

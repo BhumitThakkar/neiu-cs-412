@@ -19,22 +19,17 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="Final Project A">
+    <list default="true" id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="Final Project B">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appsupport.js" beforeDir="false" afterPath="$PROJECT_DIR$/appsupport.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/departments-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/departments-controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/employee-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/employee-controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/skills-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/skills-controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/employee.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/employee.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/departments.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/departments.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/employees.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/employees.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/departments/view_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/view_department.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/skills.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/skills.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/employees/register.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/employees/register.hbs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/employees/view_employee.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/employees/view_employee.hbs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/error.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/error.hbs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/partials/header.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/partials/header.hbs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -114,7 +109,9 @@
       <workItem from="1606449649801" duration="1525000" />
       <workItem from="1606488467398" duration="436000" />
       <workItem from="1606493779347" duration="8149000" />
-      <workItem from="1606612495343" duration="9177000" />
+      <workItem from="1606612495343" duration="9324000" />
+      <workItem from="1606676689159" duration="1401000" />
+      <workItem from="1606699264951" duration="10641000" />
     </task>
     <task id="LOCAL-00001" summary="HW 12">
       <created>1605827628880</created>
@@ -158,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1606250580233</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Final Project B">
+      <created>1606621858546</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1606621858546</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,7 +187,8 @@
     <MESSAGE value="HW 12D" />
     <MESSAGE value="HW 12E" />
     <MESSAGE value="Final Project A" />
-    <option name="LAST_COMMIT_MESSAGE" value="Final Project A" />
+    <MESSAGE value="Final Project B" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final Project B" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="175" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606613413814">
@@ -202,22 +207,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1605827109780" />
-    <state width="1899" height="310" key="GridCell.Tab.0.bottom" timestamp="1606613491354">
+    <state width="1899" height="310" key="GridCell.Tab.0.bottom" timestamp="1606707084926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="310" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1606613491354" />
-    <state width="1899" height="310" key="GridCell.Tab.0.center" timestamp="1606613491354">
+    <state width="1899" height="310" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1606707084926" />
+    <state width="1899" height="310" key="GridCell.Tab.0.center" timestamp="1606707084926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="310" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1606613491354" />
-    <state width="1899" height="310" key="GridCell.Tab.0.left" timestamp="1606613491354">
+    <state width="1899" height="310" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1606707084926" />
+    <state width="1899" height="310" key="GridCell.Tab.0.left" timestamp="1606707084926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="310" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1606613491354" />
-    <state width="1899" height="310" key="GridCell.Tab.0.right" timestamp="1606613491354">
+    <state width="1899" height="310" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1606707084926" />
+    <state width="1899" height="310" key="GridCell.Tab.0.right" timestamp="1606707084926">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="310" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1606613491354" />
+    <state width="1899" height="310" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1606707084926" />
     <state width="1899" height="348" key="GridCell.Tab.1.bottom" timestamp="1606439879282">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -266,10 +271,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="348" key="GridCell.Tab.3.right/0.0.1920.1040@0.0.1920.1040" timestamp="1606439879282" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1606250611223">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1606621868556">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1606250611223" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1606621868556" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1606074167252">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

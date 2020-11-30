@@ -11,22 +11,39 @@ exports.employeeController = {
         let department
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
-            res.redirect('/employees/register')
+            return res.redirect('/employees/register')
         } else {
             try {
+                // check email & phNumber uniqueNess - start
+                let existEmailEmployee = await Employee.findOne({ email : req.body.email})
+                let edcrypt = await encryptDecrypt()
+                let UpdatedEncryptedPhNumber = await edcrypt.encrypt(req.body.phNumber)
+                let existPhNumberEmployee = await Employee.findOne({ phNumber : UpdatedEncryptedPhNumber})
+                if(existEmailEmployee !== null) {
+                    req.flash('error', 'Employee with given email already exist.')
+                    return res.redirect('back')
+                } else if (existPhNumberEmployee !== null) {
+                    req.flash('error', 'Employee with given Phone Number already exist.')
+                    return res.redirect('back')
+                }
+                // check email & phNumber uniqueNess - end
+
                if(res.locals.showAddHR){                // there won't be any department added if any employee is not yet added
                     department = await Department.create({ name : "HR", head : req.body.first+" "+req.body.last})
+                } else if(res.locals.showAddCEO){                // CEO Department to be added as soon as HR is added and CEO is being added
+                    department = await Department.create({ name : "CEO", head : req.body.first+" "+req.body.last})
                 } else {
                     // START: Check if department id is not manipulated on front end.
                     department = await Department.findOne({_id: req.body.departmentId})
                     if (department === null) {
                         req.flash('error', 'Department Id manipulated or matching department-id was not found.')
-                        res.redirect('/employees/register')
+                        return res.redirect('/employees/register')
                     }
                     // END: Check if department id is not manipulated on front end.
                 }
+
                 if(res.locals.showAddHR || res.locals.showAddCEO){                                       // if no employee in databse
-                    let employeeParams = getEmployeeParams(req.body, "tempId - will be updated soon in same method")
+                    let employeeParams = getEmployeeParams(req.body, "self")                    // it will be updated to self further
                     let newEmployee = new Employee(employeeParams)
                     newEmployee.departmentId = department.id
                     let employee = await Employee.register(newEmployee, req.body.password)
@@ -34,23 +51,23 @@ exports.employeeController = {
                     employee = await Employee.findByIdAndUpdate({_id:employee.id}, newEmployee, {new:true})
                     department.employees.push(employee.id)
                     department = await Department.findByIdAndUpdate({_id: department.id}, {employees: department.employees}, {new: true})             // new:true ensures updated department is returned
-                    if(res.locals.showAddCEO){                          // to update manager of HR as soon as CEO is added
-                        let HREmployee = await Employee.findOneAndUpdate({departmentId : res.locals.HRDepartmentId}, {managerId : employee.id})       // So Far only 1 employee should be there in HR
+                    if(res.locals.showAddCEO){                                                                                                                         // to update manager of HR as soon as CEO is added
+                        let HREmployee = await Employee.findOneAndUpdate({departmentId : res.locals.HRDepartmentId}, {managerId : employee.id}, {new: true})        // updating HR's managerId
                     }
                     req.flash('success', `${employee.fullName}'s account created successfully.`)
                 if(res.locals.showAddHR)
-                    res.redirect('/employees/login')
+                    return res.redirect('/employees/login')
                 if(res.locals.showAddCEO)
-                    res.redirect('back')                                // this should go back to add employee
-                } else {                                                // if at least 1 employee
+                    return res.redirect('back')                                // this should go back to add employee
+                } else {                                                // if adding 3rd or more employee
                     let employeeParams = {
                         phNumber : req.body.managerPhNumber
                     }
-                    employeeParams = await Employee.encryptEmployeeParams(employeeParams)
+                    employeeParams = await req.user.encryptEmployeeParams(employeeParams)
                     let manager = await Employee.findOne({phNumber: employeeParams.phNumber})
                     if(manager === null){                               // if manager not found
-                        req.flash('error', `${employeeParams.phNumber} does not match with any employee.`)
-                        res.redirect('back')
+                        req.flash('error', `Employee Phone Number does not match with any Employee.`)
+                        return res.redirect('back')
                     } else {                                            // if manager found
                         let managerId = manager.id
                         employeeParams = getEmployeeParams(req.body, managerId)
@@ -59,12 +76,12 @@ exports.employeeController = {
                         department.employees.push(employee.id)
                         department = await Department.findByIdAndUpdate({_id: department.id}, {employees: department.employees}, {new: true})             // new:true ensures updated department is returned
                         req.flash('success', `${employee.fullName}'s account created successfully.`)
-                        res.redirect('back')                            // this should go back to add employee
+                        return res.redirect('back')                            // this should go back to add employee
                     }
                 }
             } catch (err) {
                 req.flash('error', `Failed to create account because ${err.message}.`)
-                res.redirect('/employees/register')
+                return res.redirect('/employees/register')
             }
         }
     },
@@ -123,11 +140,11 @@ exports.employeeController = {
                 options.showWelcome = false
                 options.title = "View Profile"
             }
-            res.render('employees/view_employee', options)
+            return res.render('employees/view_employee', options)
         } catch (err) {
             console.log(`Something went wrong while fetching employee: ${err.message}`)
             req.flash('error', `Something went wrong while fetching employee because ${err.message}.`)
-            res.render('error', {layout : 'layouts', styles : ['/assets/stylesheets/style.css'], tab_title: "ProfileHunt", title: "Oops! Error"})
+            return res.render('error', {layout : 'layouts', styles : ['/assets/stylesheets/style.css'], tab_title: "ProfileHunt", title: "Oops! Error"})
         }
     },
     destroy : async (req, res, next) => {
@@ -138,13 +155,21 @@ exports.employeeController = {
                 await Department.deleteMany()
                 await Skill.deleteMany()
                 req.flash('success', 'Whole System deleted successfully because no HR Employee was left inside system.')
-                res.redirect("/")
+                return res.redirect("/")
             } else {
+                let employee = await Employee.findOne({_id : req.query.objId.trim()})
+                let employeesInCompany = await Employee.find({})
+                for(let i = 0; i < employeesInCompany.length; i++){
+                    if(employee.id === employeesInCompany[i].managerId){
+                        req.flash("error", "You can't delete employee who is manager of someone. You can edit credentials though.")
+                        return res.redirect('back')
+                    }
+                }
+
                 let redirectTo = '/employees/login'
                 if(req.user.id !== req.query.objId.trim()){
                     redirectTo = 'back'
                 }
-                let employee = await Employee.findOne({_id : req.query.objId.trim()})
                 for(let i = 0; i < employee.skills.length; i++){
                     let employeeSkill = await Skill.findOne({_id: employee.skills[i]})
                     let deleteEmployeeIndex = employeeSkill.employees.indexOf(employee.id)
@@ -160,12 +185,12 @@ exports.employeeController = {
                 const updatedDepartment = await Department.findByIdAndUpdate({_id : department.id}, {employees : department.employees})
                 const deletedEmployee = await Employee.deleteOne({_id : req.query.objId.trim()})           // employee is not returned actually
                 req.flash('success', 'Employee deleted successfully.')
-                res.redirect(redirectTo)
+                return res.redirect(redirectTo)
             }
         } catch (err) {
             console.log(`Something went wrong while deleting: ${err.message}`)
             req.flash('error', `Something went wrong while deleting because ${err.message}.`)
-            res.redirect('back')
+            return res.redirect('back')
         }
     },
     getEdit: async (req, res, next) => {
@@ -182,17 +207,17 @@ exports.employeeController = {
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css']
             }
-            res.render('employees/edit_employee', options)
+            return res.render('employees/edit_employee', options)
         } catch (err) {
             req.flash('error', `Error Getting Edit-Employee Page because ${err.msg}`)
-            res.redirect('/')
+            return res.redirect('/')
         }
     },
     edit:async (req, res, next) => {
         const errors = validationResult(req)
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
-            res.redirect('back')
+            return res.redirect('back')
         } else {
             try{
                 let employeeParams = getEditEmployeeParams(req.body)
@@ -203,20 +228,20 @@ exports.employeeController = {
                 let existPhNumberEmployee = await Employee.findOne({ phNumber : UpdatedEncryptedPhNumber})
                 if(existEmailEmployee !== null && req.user.email !== req.body.email) {
                     req.flash('error', 'Employee with given email already exist.')
-                    res.redirect('back')
+                    return res.redirect('back')
                 } else if(existPhNumberEmployee !== null && req.user.phNumber !== req.body.phNumber){
-                    req.flash('error', 'Employee with given phNumber already exist.')
-                    res.redirect('back')
+                    req.flash('error', 'Employee with given Phone Number already exist.')
+                    return res.redirect('back')
                 } else {
                     employeeParams = await employee.encryptEmployeeParams(employeeParams)
                     employee = await Employee.findOneAndUpdate({_id: req.user.id}, employeeParams)
                     req.flash('success', `${employee.fullName} employee is updated successfully.`)
-                    res.redirect('/employees/view')
+                    return res.redirect('/employees/view')
                 }
             } catch (err) {
                 console.log(`Error updating employee: ${err.message}`)
                 req.flash('error', `Failed to update employee because ${err.message}.`)
-                res.redirect('back')
+                return res.redirect('back')
             }
         }
     },
@@ -242,10 +267,10 @@ exports.employeeController = {
                 options.title = 'CEO Signup'
             else
                 options.title = 'Employee Signup'
-            res.render('employees/register', options)
+            return res.render('employees/register', options)
         } catch (err) {
             req.flash('error', `Error Getting Signup Page because ${err.msg}`)
-            res.redirect('/')
+            return res.redirect('/')
         }
     },
     getLogin: async (req, res, next) => {
@@ -257,10 +282,10 @@ exports.employeeController = {
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css'],
             }
-            res.render('employees/login', options)
+            return res.render('employees/login', options)
         } catch (err) {
             req.flash('error', `Error Getting Login Page because ${err.msg}`)
-            res.redirect('/')
+            return res.redirect('/')
         }
     },
     logout: async (req, res, next) => {
@@ -268,14 +293,14 @@ exports.employeeController = {
             req.logout()
             if(req.isAuthenticated()) {
                 req.flash('error', 'Unable to Log Out.')
-                res.redirect('back')                    // back is keyword to go back to where we were
+                return res.redirect('back')                    // back is keyword to go back to where we were
             } else {
                 req.flash('success', 'Employee Logged Out Successfully.')
-                res.redirect('/employees/login')
+                return res.redirect('/employees/login')
             }
         } else {
             req.flash('error', 'Please log in before trying to logout.')
-            res.redirect('/employees/login')
+            return res.redirect('/employees/login')
         }
     }
 }

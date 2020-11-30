@@ -72,19 +72,24 @@ app.use(async (req, res, next) => {
     let employee = req.user ? req.user.toObject() : undefined
     res.locals.loggedInEmployee = employee
     res.locals.showDepartment = false
+    res.locals.canAddEmployee = false
+    let employeeCount = await Employee.countDocuments()
     if(employee !== undefined){
         let department = await Department.findOne({name: "HR"})
         res.locals.HRDepartmentId = department.id
-        if(employee.departmentId === department.id){
+        if(employee.departmentId === department.id && employeeCount > 1){           // because we can only add department if HR and CEO are added.
             res.locals.showDepartment = true
-        } else {
+        }
+        if(employee.departmentId === department.id){
+            res.locals.canAddEmployee = true
+        }
+        else {
             if(req.originalUrl.startsWith('/departments')) {
-                req.flash('error','Contact system administrator to access department.')
+                req.flash('error','Only HR department can access department domain.')
                 res.redirect('back');
             }
         }
     }
-    let employeeCount = await Employee.countDocuments()
     res.locals.showAddHR = false
     res.locals.showAddCEO = false
     if(employeeCount === 0){

@@ -13,7 +13,7 @@ router.get('/add', async function(req, res, next) {
         }
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 
@@ -32,7 +32,7 @@ router.post('/save', skillsValidations, async (req, res, next) => {
         }
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 
@@ -47,7 +47,7 @@ router.get('/view', async function(req, res, next) {
         }
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 
@@ -62,7 +62,7 @@ router.get('/edit', async function(req, res, next) {
         }
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 
@@ -77,7 +77,7 @@ router.get('/destroy', async function(req, res, next) {
         }
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 
@@ -92,7 +92,7 @@ router.get('/viewAll', async function(req, res, next) {
         }
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 

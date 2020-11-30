@@ -7,7 +7,7 @@ exports.skillsController = {
         const errors = validationResult(req)
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
-            res.redirect('/skills/add')
+            return res.redirect('/skills/add')
         } else {
             try{
                 let skillParams = getSkillParams(req.body)
@@ -19,7 +19,7 @@ exports.skillsController = {
                 })
                 if(employeeSkillNames.indexOf(skillParams.name) !== -1){
                     req.flash('error', 'Skill already exist.')
-                    res.redirect('back')
+                    return res.redirect('back')
                 } else {
                     let skill = await Skill.findOne({name: skillParams.name})
                     if(skill === null){
@@ -28,12 +28,12 @@ exports.skillsController = {
                     req.user.skills.push(skill.id)
                     req.user = await Employee.findByIdAndUpdate({_id:req.user.id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
                     req.flash('success', `${skill.name} skill is created successfully.`)
-                    res.redirect('/skills/viewAll')
+                    return res.redirect('/skills/viewAll')
                 }
             } catch (err) {
                 console.log(`Error saving skill: ${err.message}`)
                 req.flash('error', `Failed to create skill because ${err.message}.`)
-                res.redirect('/skills/add')
+                return res.redirect('/skills/add')
             }
         }
     },
@@ -41,7 +41,7 @@ exports.skillsController = {
         const errors = validationResult(req)
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
-            res.redirect('/skills/viewAll')
+            return res.redirect('/skills/viewAll')
         } else {
             try {
                 let skillParams = getSkillParams(req.body)
@@ -54,7 +54,7 @@ exports.skillsController = {
                 })
                 if (employeeSkillNames.indexOf(skillParams.name) !== -1) {
                     req.flash('error', 'Skill already exist.')
-                    res.redirect('back')
+                    return res.redirect('back')
                 } else {
                     let newSkill = await Skill.findOne({name: skillParams.name})
                     if(newSkill === null){
@@ -75,12 +75,12 @@ exports.skillsController = {
                     newSkill = await Skill.findByIdAndUpdate({_id: newSkill.id}, {employees: newSkill.employees}, {new: true})             // new:true ensures updated skill is returned
                     req.user = await Employee.findByIdAndUpdate({_id: req.user.id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
                     req.flash('success', `${newSkill.name} skill is updated successfully.`)
-                    res.redirect('/skills/viewAll')
+                    return res.redirect('/skills/viewAll')
                 }
             } catch (err) {
                 console.log(`Error updating skill: ${err.message}`)
                 req.flash('error', `Failed to update skill because ${err.message}.`)
-                res.redirect('/skills/viewAll')
+                return res.redirect('/skills/viewAll')
             }
         }
     },
@@ -96,11 +96,11 @@ exports.skillsController = {
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css']
             }
-            res.render('skills/edit_skill', options)
+            return res.render('skills/edit_skill', options)
         } catch (err) {
             console.log(`Something went wrong while fetching skill: ${err.message}`)
             req.flash('error', `Something went wrong while fetching skill because ${err.message}.`)
-            res.redirect('/skills/viewAll')
+            return res.redirect('/skills/viewAll')
         }
     },
     destroy : async (req, res, next) => {
@@ -117,11 +117,11 @@ exports.skillsController = {
                 skill = await Skill.findByIdAndUpdate({_id : skill.id}, {employees : skill.employees}, {new: true})
             }
             req.flash('success', 'Skill deleted successfully.')
-            res.redirect('/skills/viewAll')
+            return res.redirect('/skills/viewAll')
         } catch (err) {
             console.log(`Something went wrong while deleting: ${err.message}`)
             req.flash('error', `Something went wrong while deleting because ${err.message}.`)
-            res.redirect('/skills/viewAll')
+            return res.redirect('/skills/viewAll')
         }
     },
     getAllSkills : async (req, res, next) => {
@@ -142,7 +142,7 @@ exports.skillsController = {
             styles : ['/assets/stylesheets/style.css'],
             isAllSkillActive: 'active'
         }
-        res.render('skills/view_all_skills', options);
+        return res.render('skills/view_all_skills', options);
     },
     getAddSkill : async (req, res, next) => {
         let options = {
@@ -153,7 +153,7 @@ exports.skillsController = {
             styles : ['/assets/stylesheets/style.css'],
             isAddSkillActive: 'active'
         }
-        res.render('skills/add_skill', options)
+        return res.render('skills/add_skill', options)
     }
 }
 

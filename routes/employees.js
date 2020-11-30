@@ -3,11 +3,11 @@ const router = express.Router()
 let { employeeRegistrationValidations, employeeLoginValidations, employeeEditValidations, employeeController } = require('../controllers/employee-controller')
 
 router.get('/register', async (req, res, next)=>{
-    if(res.locals.showAddHR || (req.isAuthenticated() && res.locals.showDepartment)) {
+    if(res.locals.showAddHR || (req.isAuthenticated() && res.locals.canAddEmployee)) {
         await employeeController.getSignup(req, res, next)
     } else {
-        req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        req.flash('error', 'Permission Denied.')
+        return res.redirect('back')
     }
 })
 
@@ -32,16 +32,16 @@ router.get('/view', async (req, res, next) => {
         await employeeController.view(req, res, next)
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 
 router.get('/destroy', async (req, res, next) => {
-    if(req.isAuthenticated()) {
+    if(req.isAuthenticated() && res.locals.canAddEmployee) {
         await employeeController.destroy(req, res, next)
     } else {
-        req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        req.flash('error', 'Permission Denied.')
+        return res.redirect('back')
     }
 })
 
@@ -50,7 +50,7 @@ router.get('/edit', async (req, res, next) => {
         await employeeController.getEdit(req, res, next)
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 
@@ -59,7 +59,7 @@ router.post('/edit', employeeEditValidations, async (req, res, next) => {
         await employeeController.edit(req, res, next)
     } else {
         req.flash('error', 'Please log in.')
-        res.redirect('/employees/login')
+        return res.redirect('/employees/login')
     }
 })
 

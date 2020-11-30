@@ -7,23 +7,23 @@ exports.departmentsController = {
         const errors = validationResult(req)
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
-            res.redirect('/departments/add')
+            return res.redirect('/departments/add')
         } else {
             try{
                 let departmentParams = getDepartmentParams(req.body)
                 let department = await Department.findOne({ name : req.body.departmentName})
                 if(department !== null){
                     req.flash('error', 'Department already exist.')
-                    res.redirect('back')
+                    return res.redirect('back')
                 } else {
                     let department = await Department.create(departmentParams)
                     req.flash('success', `${department.name} department is created successfully.`)
-                    res.redirect('/departments/view?objId='+department.id)
+                    return res.redirect('/departments/view?objId='+department.id)
                 }
             } catch (err) {
                 console.log(`Error saving department: ${err.message}`)
                 req.flash('error', `Failed to create department because ${err.message}.`)
-                res.redirect('/departments/add')
+                return res.redirect('/departments/add')
             }
         }
     },
@@ -31,29 +31,29 @@ exports.departmentsController = {
         const errors = validationResult(req)
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
-            res.redirect('/departments/viewAll')
+            return res.redirect('/departments/viewAll')
         } else {
             try{
                 let departmentParams = getDepartmentParams(req.body)
                 let department = await Department.findOne({ _id : req.body.objId.trim()})
                 if(department.name === "HR" && req.body.departmentName !== "HR") {
                     req.flash('error', 'HR department-name can never be edited.')
-                    res.redirect('back')
+                    return res.redirect('back')
                 } else {
                     let department = await Department.findOne({ name : req.body.departmentName})
                     if(department !== null && department.name !== "HR"){
                         req.flash('error', 'Department already exist.')
-                        res.redirect('back')
+                        return res.redirect('back')
                     } else {
                         let department = await Department.findOneAndUpdate({_id: req.body.objId.trim()}, departmentParams)
                         req.flash('success', `${department.name} department is updated successfully.`)
-                        res.redirect('/departments/view?objId=' + department.id)
+                        return res.redirect('/departments/view?objId=' + department.id)
                     }
                 }
             } catch (err) {
                 console.log(`Error updating department: ${err.message}`)
                 req.flash('error', `Failed to update department because ${err.message}.`)
-                res.redirect('/departments/viewAll')
+                return res.redirect('/departments/viewAll')
             }
         }
     },
@@ -79,11 +79,11 @@ exports.departmentsController = {
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css']
             }
-            res.render('departments/view_department', options)
+            return res.render('departments/view_department', options)
         } catch (err) {
             console.log(`Something went wrong while fetching department: ${err.message}`)
             req.flash('error', `Something went wrong while fetching department because ${err.message}.`)
-            res.redirect('/departments/viewAll')
+            return res.redirect('/departments/viewAll')
         }
     },
     getEditDepartment : async (req, res, next) => {
@@ -99,34 +99,28 @@ exports.departmentsController = {
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css']
             }
-            res.render('departments/edit_department', options)
+            return res.render('departments/edit_department', options)
         } catch (err) {
             console.log(`Something went wrong while fetching department: ${err.message}`)
             req.flash('error', `Something went wrong while fetching department because ${err.message}.`)
-            res.redirect('/departments/viewAll')
+            return res.redirect('/departments/viewAll')
         }
     },
     destroy : async (req, res, next) => {
         try{
             let department =await Department.findById({_id : req.query.objId.trim()})
-            if(department.name === "HR"){
-                req.flash('error', 'HR department cannot be deleted ever.')
-                res.redirect('back')                    // back - keyword to go back to where we were
+            if (department.employees.length > 0) {
+                req.flash('error', 'Department cannot be deleted with employees in it.')
+                return res.redirect('back')                    // back - keyword to go back to where we were
             } else {
-                let deletedEmployees = await Employee.deleteMany({"departmentId": department.id})
-                if(deletedEmployees.acknowledged === false){
-                    req.flash('error', `Something went wrong while deleting employees under ${department.departmentName} department. Can't delete department.`)
-                    res.redirect('back')                    // back - keyword to go back to where we were
-                } else {
-                    const deletedDepartment = await Department.deleteOne({_id : req.query.objId.trim()})           // department is not returned actually
-                    req.flash('success', `Department deleted successfully. ${deletedEmployees.deletedCount} employee(s) removed.`)
-                    res.redirect('/departments/viewAll')
-                }
+                const deletedDepartment = await Department.deleteOne({_id : req.query.objId.trim()})           // department is not returned actually
+                req.flash('success', `Department deleted successfully.`)
+                return res.redirect('/departments/viewAll')
             }
         } catch (err) {
             console.log(`Something went wrong while deleting: ${err.message}`)
             req.flash('error', `Something went wrong while deleting because ${err.message}.`)
-            res.redirect('/departments/viewAll')
+            return res.redirect('/departments/viewAll')
         }
     },
     getAllDepartments : async (req, res, next) => {
@@ -145,7 +139,7 @@ exports.departmentsController = {
             styles : ['/assets/stylesheets/style.css'],
             isAllDepartmentActive: 'active'
         }
-        res.render('departments/view_all_departments', options);
+        return res.render('departments/view_all_departments', options);
     },
     getAddDepartment : async (req, res, next) => {
         let options = {
@@ -156,7 +150,7 @@ exports.departmentsController = {
             styles : ['/assets/stylesheets/style.css'],
             isAddDepartmentActive: 'active'
         }
-        res.render('departments/add_department', options)
+        return res.render('departments/add_department', options)
     }
 }
 

@@ -21,11 +21,9 @@
                 {{#if showDepartment}}
                     <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/add">Add Department</a>
                     <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/viewAll">All Department</a>
-                    {{#if showAddCEO}}
-                        <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">Add CEO Employee</a>
-                    {{else}}
-                        <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">Add Employee</a>
-                    {{/if}}
+                {{/if}}
+                {{#if canAddEmployee}}
+                        <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">{{#if showAddCEO}}Add CEO Employee{{else}}Add Employee{{/if}}</a>
                 {{/if}}
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
