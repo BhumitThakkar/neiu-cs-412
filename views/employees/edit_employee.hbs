@@ -8,9 +8,18 @@
     {{> flash_messages }}
 </div>
 
-<form method="post" action="/employees/edit">
+{{#if canAddEmployee}}
+    {{#if isNotCEO}}
+        <form method="post" action="/employees/editByHR">
+    {{else}}
+        <form method="post" action="/employees/CEOEditByHR">
+    {{/if}}
+    <input type="hidden" name="employeeId" value="{{employee.id}}"/>
+{{else}}
+    <form method="post" action="/employees/edit">
+{{/if}}
     <div class="container-fluid">
-        <input type="hidden" name="saveMethod" value="{{#if isCreate }}create{{ else }}update{{/if}}">
+        <input type="hidden" name="saveMethod" value="{{#if isCreate}}create{{ else }}update{{/if}}">
 
         <div class="form-group row justify-content-center">
             <div class="col-md-3 col-5 text-right font-weight-bold">
@@ -47,6 +56,53 @@
                 <input class="form-control" type="email" name="email" value="{{employee.email}}" required/>
             </div>
         </div>
+
+
+        {{#if canAddEmployee}}
+            {{#if isNotCEO}}
+
+                <div class="form-group row justify-content-center">
+                    <div class="col-md-3 col-5 text-right font-weight-bold">
+                        <label class="col-form-label" for="departmentId">Department:</label>
+                    </div>
+                    <div class="col-md-4 col-7">
+                        <select class="form-control" name="departmentId">
+                            <option value="{{departmentId}}">{{ departmentName }}</option>
+                            {{#each departmentList}}
+                                <option value="{{objId}}">{{ name }}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row justify-content-center">
+                    <div class="col-md-3 col-5 text-right font-weight-bold">
+                        <label class="col-form-label" for="departmentId">Manager Phone Number:</label>
+                    </div>
+                    <div class="col-md-4 col-7">
+                        <input class="form-control" type="number" name="managerPhNumber" min="1000000000" max="9999999999" value="{{managerPhNumber}}" required/>
+                    </div>
+                </div>
+
+                <div class="form-group row justify-content-center">
+                    <div class="col-md-3 col-5 text-right font-weight-bold">
+                        <label class="col-form-label" for="jobTitle">Job Title:</label>
+                    </div>
+                    <div class="col-md-4 col-7">
+                        <input class="form-control" type="text" name="jobTitle" value="{{employee.jobTitle}}" required/>
+                    </div>
+                </div>
+            {{/if}}
+
+            <div class="form-group row justify-content-center">
+                <div class="col-md-3 col-5 text-right font-weight-bold">
+                    <label class="col-form-label" for="jobRole">Job Role:</label>
+                </div>
+                <div class="col-md-4 col-7">
+                    <textarea class="form-control" name="jobRole" rows="5" required>{{employee.jobRole}}</textarea>
+                </div>
+            </div>
+        {{/if}}
 
         <div class="form-group row justify-content-center">
             <input class="col-3 col-md-2 btn btn-light" type="submit" value="Submit">

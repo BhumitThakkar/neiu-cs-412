@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-let { employeeRegistrationValidations, employeeLoginValidations, employeeEditValidations, employeeController } = require('../controllers/employee-controller')
+let { employeeRegistrationValidations, employeeLoginValidations, employeeEditValidations, employeeEditByHRValidations, CEOEditByHRValidations, employeeController } = require('../controllers/employee-controller')
 
 router.get('/register', async (req, res, next)=>{
     if(res.locals.showAddHR || (req.isAuthenticated() && res.locals.canAddEmployee)) {
@@ -55,6 +55,24 @@ router.get('/edit', async (req, res, next) => {
 })
 
 router.post('/edit', employeeEditValidations, async (req, res, next) => {
+    if(req.isAuthenticated()) {
+        await employeeController.edit(req, res, next)
+    } else {
+        req.flash('error', 'Please log in.')
+        return res.redirect('/employees/login')
+    }
+})
+
+router.post('/editByHR', employeeEditByHRValidations, async (req, res, next) => {
+    if(req.isAuthenticated()) {
+        await employeeController.edit(req, res, next)
+    } else {
+        req.flash('error', 'Please log in.')
+        return res.redirect('/employees/login')
+    }
+})
+
+router.post('/CEOEditByHR', CEOEditByHRValidations, async (req, res, next) => {
     if(req.isAuthenticated()) {
         await employeeController.edit(req, res, next)
     } else {

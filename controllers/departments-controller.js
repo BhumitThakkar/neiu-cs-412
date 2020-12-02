@@ -36,12 +36,12 @@ exports.departmentsController = {
             try{
                 let departmentParams = getDepartmentParams(req.body)
                 let department = await Department.findOne({ _id : req.body.objId.trim()})
-                if(department.name === "HR" && req.body.departmentName !== "HR") {
-                    req.flash('error', 'HR department-name can never be edited.')
+                if((department.name === "HR" && req.body.departmentName !== "HR") || (department.name === "Executive Board" && req.body.departmentName !== "Executive Board")) {
+                    req.flash('error', 'HR and Executive Board department-name can never be edited.')
                     return res.redirect('back')
                 } else {
                     let department = await Department.findOne({ name : req.body.departmentName})
-                    if(department !== null && department.name !== "HR"){
+                    if(department !== null && (department.name !== "HR" && department.name !== "Executive Board")){
                         req.flash('error', 'Department already exist.')
                         return res.redirect('back')
                     } else {

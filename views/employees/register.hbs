@@ -48,7 +48,7 @@
                     {{#if showAddHR}}
                         <option value="keep me as it is">HR</option>
                     {{else if showAddCEO}}
-                        <option value="keep me as it is">CEO</option>
+                        <option value="keep me as it is">Executive Board</option>
                     {{else}}
                         {{#each departmentList}}
                             <option value="{{objId}}">{{ name }}</option>
@@ -78,7 +78,7 @@
                 <label class="col-form-label" for="jobTitle">Job Title:</label>
             </div>
             <div class="col-md-4 col-7">
-                <input class="form-control" type="text" name="jobTitle" required/>
+                <input class="form-control" type="text" name="jobTitle" {{#if showAddCEO}}value="CEO" readonly{{/if}} required/>
             </div>
         </div>
 

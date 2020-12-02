@@ -30,8 +30,8 @@ exports.employeeController = {
 
                if(res.locals.showAddHR){                // there won't be any department added if any employee is not yet added
                     department = await Department.create({ name : "HR", head : req.body.first+" "+req.body.last})
-                } else if(res.locals.showAddCEO){                // CEO Department to be added as soon as HR is added and CEO is being added
-                    department = await Department.create({ name : "CEO", head : req.body.first+" "+req.body.last})
+                } else if(res.locals.showAddCEO){                // Executive Board Department to be added as soon as HR is added and CEO is being added
+                    department = await Department.create({ name : "Executive Board", head : req.body.first+" "+req.body.last})
                 } else {
                     // START: Check if department id is not manipulated on front end.
                     department = await Department.findOne({_id: req.body.departmentId})
@@ -44,8 +44,10 @@ exports.employeeController = {
 
                 if(res.locals.showAddHR || res.locals.showAddCEO){                                       // if no employee in databse
                     let employeeParams = getEmployeeParams(req.body, "self")                    // it will be updated to self further
+                    employeeParams.departmentId = department.id
+                    if(res.locals.showAddCEO)
+                        employeeParams.jobTitle = "CEO"
                     let newEmployee = new Employee(employeeParams)
-                    newEmployee.departmentId = department.id
                     let employee = await Employee.register(newEmployee, req.body.password)
                     newEmployee.managerId = employee.id
                     employee = await Employee.findByIdAndUpdate({_id:employee.id}, newEmployee, {new:true})
@@ -121,8 +123,8 @@ exports.employeeController = {
                     name: skill.name
                 }
             })
-            let department = await Department.findOne({_id: req.user.departmentId})
-            let manager = await Employee.findOne({_id: req.user.managerId})
+            let department = await Department.findOne({_id: employee.departmentId})
+            let manager = await Employee.findOne({_id: employee.managerId})
             let options = {
                 employee: employee,
                 tab_title: "ProfileHunt",
@@ -149,19 +151,19 @@ exports.employeeController = {
     },
     destroy : async (req, res, next) => {
         try{
-            let employeesInHR = await Employee.countDocuments({departmentId: res.locals.HRDepartmentId})
-            if(employeesInHR === 1){                    // only 1 HR left which is deleting so whole system goes down
+            let employeesInHR = await Employee.countDocuments({departmentId : res.locals.HRDepartmentId})
+            let employee = await Employee.findOne({_id : req.query.objId.trim()})
+            if(employee.departmentId === res.locals.HRDepartmentId && employeesInHR === 1){                    // only 1 HR left which is deleting so whole system goes down
                 await Employee.deleteMany()
                 await Department.deleteMany()
                 await Skill.deleteMany()
                 req.flash('success', 'Whole System deleted successfully because no HR Employee was left inside system.')
                 return res.redirect("/")
             } else {
-                let employee = await Employee.findOne({_id : req.query.objId.trim()})
                 let employeesInCompany = await Employee.find({})
                 for(let i = 0; i < employeesInCompany.length; i++){
                     if(employee.id === employeesInCompany[i].managerId){
-                        req.flash("error", "You can't delete employee who is manager of someone. You can edit credentials though.")
+                        req.flash("error", "You can't delete employee who is manager of someone. You can edit though.")
                         return res.redirect('back')
                     }
                 }
@@ -195,17 +197,41 @@ exports.employeeController = {
     },
     getEdit: async (req, res, next) => {
         try {
-            let employee = await Employee.findOne({_id : req.user.id })
+            let id
+            if(req.user.departmentId === res.locals.HRDepartmentId && req.query.objId !== undefined)               // HR employee only can access other employee edit
+                id = req.query.objId.trim()
+            else                                                                                                // other can access edit but only own
+                id = req.user.id
+            let employee = await Employee.findOne({_id : id })
             employee = await employee.decryptEmployee()
             employee = getEmployeeFromEmployeeObject(employee)
-
+            const department = await Department.findOne({_id : employee.departmentId})
+            const departments = await Department.find({})
+            const AllDepartments = departments.filter(d => d.id !== department.id).map(d => {
+                return {
+                    objId: d.id,
+                    name: d.name
+                }
+            })
+            let manager = await Employee.findOne({_id: employee.managerId})
+            manager = await manager.decryptEmployee()
+            console.log(manager)
             let options = {
                 isCreate : false,
                 tab_title : "ProfileHunt",
                 title : 'Edit Employee',
                 employee : employee,
+                managerPhNumber : manager.phNumber,
+                departmentId : department.id,
+                departmentName: department.name,
+                departmentList: AllDepartments,
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css']
+            }
+            if(employee.jobTitle === "CEO"){
+                options.isNotCEO = false
+            } else {
+                options.isNotCEO = true
             }
             return res.render('employees/edit_employee', options)
         } catch (err) {
@@ -343,6 +369,7 @@ const getEmployeeFromEmployeeObject = employee => {
         jobRole: employee.jobRole.replace('\n','<br/>'),
         email: employee.email,
         skills: employee.skills,
+        managerId: employee.managerId,
         departmentId: employee.departmentId,
         id: employee.id
     }
@@ -371,6 +398,52 @@ exports.employeeRegistrationValidations = [
     body('jobTitle')
         .notEmpty().withMessage('Job Title is required.')
         .isLength({min: 2}).withMessage('Job Title must be at least 2 characters.'),
+    body('jobRole')
+        .notEmpty().withMessage('Job Role is required.')
+        .isLength({min: 5}).withMessage('Job Role must be at least 5 characters.'),
+    body('email')
+        .notEmpty().withMessage('Email is required.')
+        .isEmail().normalizeEmail().withMessage('Email is invalid.')
+]
+exports.employeeEditByHRValidations = [
+    body('first')
+        .notEmpty().withMessage('First Name is required.')
+        .isLength({min: 2}).withMessage('First name must be at least 2 characters.'),
+    body('last')
+        .notEmpty().withMessage('Last Name is required.')
+        .isLength({min: 2}).withMessage('Last name must be at least 2 characters.'),
+    body('phNumber')
+        .notEmpty().withMessage('Personal Phone Number is required.')
+        .isNumeric().withMessage('Personal Phone Number must be numeric.')
+        .isLength({min: 10, max: 10}).withMessage('Personal Phone Number must be 10 characters only.'),
+    body('departmentId')
+        .notEmpty().withMessage('Department is required.'),
+    body('managerPhNumber')
+        .notEmpty().withMessage('Manager phNumber is required.')
+        .isNumeric().withMessage('Manager Phone Number must be numeric.')
+        .isLength({min: 10, max: 10}).withMessage('Personal Phone Number must be 10 characters only.'),
+    body('jobTitle')
+        .notEmpty().withMessage('Job Title is required.')
+        .isLength({min: 2}).withMessage('Job Title must be at least 2 characters.'),
+    body('jobRole')
+        .notEmpty().withMessage('Job Role is required.')
+        .isLength({min: 5}).withMessage('Job Role must be at least 5 characters.'),
+    body('email')
+        .notEmpty().withMessage('Email is required.')
+        .isEmail().normalizeEmail().withMessage('Email is invalid.')
+]
+
+exports.CEOEditByHRValidations = [
+    body('first')
+        .notEmpty().withMessage('First Name is required.')
+        .isLength({min: 2}).withMessage('First name must be at least 2 characters.'),
+    body('last')
+        .notEmpty().withMessage('Last Name is required.')
+        .isLength({min: 2}).withMessage('Last name must be at least 2 characters.'),
+    body('phNumber')
+        .notEmpty().withMessage('Personal Phone Number is required.')
+        .isNumeric().withMessage('Personal Phone Number must be numeric.')
+        .isLength({min: 10, max: 10}).withMessage('Personal Phone Number must be 10 characters only.'),
     body('jobRole')
         .notEmpty().withMessage('Job Role is required.')
         .isLength({min: 5}).withMessage('Job Role must be at least 5 characters.'),
