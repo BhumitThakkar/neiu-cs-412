@@ -14,7 +14,8 @@
     {{else}}
         <form method="post" action="/employees/CEOEditByHR">
     {{/if}}
-    <input type="hidden" name="employeeId" value="{{employee.id}}"/>
+        <input type="hidden" name="employeeId" value="{{employee.id}}"/>
+        <input type="hidden" name="isNotCEO" value="{{#if isNotCEO}}true{{else}}false{{/if}}"/>
 {{else}}
     <form method="post" action="/employees/edit">
 {{/if}}

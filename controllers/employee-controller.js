@@ -113,7 +113,7 @@ exports.employeeController = {
                 id = req.user.id
             employee = await Employee.findOne({_id : id })
             employee = await employee.decryptEmployee()
-            employee = getEmployeeFromEmployeeObject(employee)
+            employee = getEmployeeFromEmployeeObject(employee, "view")
             let skillIds = employee.skills
             let skillPromises = skillIds.map(id => Skill.findOne({_id: id}))
             let skills = await Promise.all(skillPromises)
@@ -204,7 +204,7 @@ exports.employeeController = {
                 id = req.user.id
             let employee = await Employee.findOne({_id : id })
             employee = await employee.decryptEmployee()
-            employee = getEmployeeFromEmployeeObject(employee)
+            employee = getEmployeeFromEmployeeObject(employee, 'edit')
             const department = await Department.findOne({_id : employee.departmentId})
             const departments = await Department.find({})
             const AllDepartments = departments.filter(d => d.id !== department.id).map(d => {
@@ -215,7 +215,6 @@ exports.employeeController = {
             })
             let manager = await Employee.findOne({_id: employee.managerId})
             manager = await manager.decryptEmployee()
-            console.log(manager)
             let options = {
                 isCreate : false,
                 tab_title : "ProfileHunt",
@@ -246,23 +245,63 @@ exports.employeeController = {
             return res.redirect('back')
         } else {
             try{
-                let employeeParams = getEditEmployeeParams(req.body)
-                let employee = await Employee.findOne({ _id : req.user.id})
-                let existEmailEmployee = await Employee.findOne({ email : req.body.email})
+                let employee
+                if(res.locals.canAddEmployee){
+                    employee = await Employee.findOne({ _id : req.body.employeeId})
+                } else
+                    employee = await Employee.findOne({ _id : req.user.id})
+
                 let edcrypt = await encryptDecrypt()
-                let UpdatedEncryptedPhNumber = await edcrypt.encrypt(req.body.phNumber)
-                let existPhNumberEmployee = await Employee.findOne({ phNumber : UpdatedEncryptedPhNumber})
-                if(existEmailEmployee !== null && req.user.email !== req.body.email) {
+                employee = await employee.decryptEmployee()
+
+                let employeeParams
+                if(res.locals.canAddEmployee){
+                    if(req.body.isNotCEO === "true"){
+                        let HREmployeesCount = await Employee.countDocuments({departmentId : res.locals.HRDepartmentId})
+                        if((HREmployeesCount === 1 && employee.departmentId === res.locals.HRDepartmentId) && req.body.departmentId !== employee.departmentId){
+                            req.flash('error', 'Cannot change department becasue HR department needs at least 1 employee at any time.')
+                            return res.redirect('back')
+                        }
+
+                        let encryptedManagerPhNumber = await edcrypt.encrypt(req.body.managerPhNumber)
+                        let manager = await Employee.findOne({phNumber : encryptedManagerPhNumber})
+                        if(manager === null){
+                            req.flash('error', 'No manager with given phone number was found.')
+                            return res.redirect('back')
+                        } else {
+                            employeeParams = getEditByHREmployeeParams(req.body, manager.id)
+                        }
+                    }
+                    else
+                        employeeParams = getCEOEditByHREmployeeParams(req.body)
+                } else
+                    employeeParams = getEditEmployeeParams(req.body)
+
+                let existEmailEmployee = await Employee.findOne({ email : req.body.email})
+                let updatedEncryptedPhNumber = await edcrypt.encrypt(req.body.phNumber)
+                let existPhNumberEmployee = await Employee.findOne({ phNumber : updatedEncryptedPhNumber})
+                if(existEmailEmployee !== null && req.body.email !== employee.email) {
                     req.flash('error', 'Employee with given email already exist.')
                     return res.redirect('back')
-                } else if(existPhNumberEmployee !== null && req.user.phNumber !== req.body.phNumber){
+                } else if(existPhNumberEmployee !== null && req.body.phNumber !== employee.phNumber) {
                     req.flash('error', 'Employee with given Phone Number already exist.')
                     return res.redirect('back')
                 } else {
+                    let oldDepartmentId = employee.departmentId
                     employeeParams = await employee.encryptEmployeeParams(employeeParams)
-                    employee = await Employee.findOneAndUpdate({_id: req.user.id}, employeeParams)
+                    employee = await Employee.findOneAndUpdate({_id: employee.id}, employeeParams, {new : true})
+                    if(res.locals.canAddEmployee)
+                        if(req.body.isNotCEO === "true" && req.body.departmentId !== oldDepartmentId){
+                            let oldDepartment = await Department.findOne({_id: oldDepartmentId})
+                            let newDepartment = await Department.findOne({_id: req.body.departmentId})
+                            let employeeIndex = oldDepartment.employees.indexOf(employee.id)
+                            oldDepartment.employees.splice(employeeIndex, 1)
+                            newDepartment.employees.push(employee.id)
+                            oldDepartment = await Department.findOneAndUpdate({_id: oldDepartmentId}, {employees: oldDepartment.employees},{new:true})
+                            newDepartment = await Department.findOneAndUpdate({_id: req.body.departmentId}, {employees: newDepartment.employees},{new:true})
+                        }
                     req.flash('success', `${employee.fullName} employee is updated successfully.`)
-                    return res.redirect('/employees/view')
+                    return res.redirect('/employees/view?objId='+employee.id)
                 }
             } catch (err) {
                 console.log(`Error updating employee: ${err.message}`)
@@ -342,6 +381,20 @@ function getEditEmployeeParams(body) {
     }
 }
 
+function getCEOEditByHREmployeeParams(body) {
+    let emp = getEditEmployeeParams(body)
+    emp.jobRole = body.jobRole
+    return emp
+}
+
+function getEditByHREmployeeParams(body, managerId) {
+    let emp = getCEOEditByHREmployeeParams(body)
+    emp.jobTitle = body.jobTitle
+    emp.departmentId = body.departmentId
+    emp.managerId = managerId
+    return emp
+}
+
 const getEmployeeParams = (body, managerId) => {
     return {
         name: {
@@ -358,7 +411,12 @@ const getEmployeeParams = (body, managerId) => {
     }
 }
 
-const getEmployeeFromEmployeeObject = employee => {
+const getEmployeeFromEmployeeObject = (employee, editOrView) => {
+    let separator
+    if(editOrView === "view")
+        separator = "<br/>"
+    else
+        separator = "\n"
     return {
         name : {
             first: employee.name.first,
@@ -366,7 +424,7 @@ const getEmployeeFromEmployeeObject = employee => {
         },
         phNumber: employee.phNumber,
         jobTitle: employee.jobTitle,
-        jobRole: employee.jobRole.replace('\n','<br/>'),
+        jobRole: employee.jobRole.replace('\n',separator),
         email: employee.email,
         skills: employee.skills,
         managerId: employee.managerId,
