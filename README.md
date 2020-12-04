@@ -3,12 +3,12 @@ Profile Hunt.
 
 # Project Topic/Objective:
 ### What is it?
-It is a web-app with employees containing a job profile.
+“Profile Hunt” is a web app project that helps any employee to get the details of other employees with certain skill, that he or she is in a look for, in the same company. It also has capabilities of managing employees and department but only by the HR team. As a new employee, this web-application makes it easy to know about the company's horizons in terms of department, employees and their skills.
 ### What will it do?
-The company employee network will be managed by the HR team. HR will be at the top of authorization. While other employees will only have view rights. It is supposed to provide a search for a profile based on skill. With this information, one can also contact him/her in need. This feature will be available for all the employees including HR. It will give a brief idea about the company's employees.
+The company employee network will be managed by the HR team. HR will be at the top of authorization. While other employees will only have view rights. It provides a "search for a profile" functionality based on skill. With this information, one can also contact him/her in need. This feature will be available for all the employees including HR. It gives a brief details about the company's employees.
 
 # Motivation:
-This makes employee management and exploring an easy job.  It will help to get an idea on the company's skill. "Profile Hunt" is made easy and will be much useful to the HR department in their employee recruiting decisions. It is a simple project at the same time important enough making it a good pick that can help in learning MEAN stack technologies. This product can make its space when integrated with the job hunt websites like [indeed](https://www.indeed.com). As a new employee, this web-application makes it easy to know about the company's horizons in terms of department, employees and their skills.
+“Profile Hunt” makes employee management and search an easy job for HR employee specially. It helps to get an idea on the company's skill set. "Profile Hunt" is made easy and hence is much useful to the HR department in their employee recruiting decisions. It is a simple project making it a good pick that can help in learning MEAN stack technologies. This product can make its space when integrated with the job hunt websites like [indeed](https://www.indeed.com).
 
 # Server-Side Components:
 For this project, HR Team will **create/ view/ edit/ delete** employee profile.
