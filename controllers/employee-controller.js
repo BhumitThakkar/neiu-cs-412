@@ -138,23 +138,39 @@ exports.employeeController = {
                 employee: employee,
                 tab_title: "ProfileHunt",
                 appName :"ProfileHunt",
+                title : "View Profile",
                 departmentName : department.name,
                 managerName : manager.fullName,
                 skillList: allSkills,
                 layout : 'layouts',
                 styles : ['/assets/stylesheets/style.css']
             }
-            if(req.originalUrl === "/"){
-                options.showWelcome = true
-                options.title = "Home"
-            } else {
-                options.showWelcome = false
-                options.title = "View Profile"
-            }
             return res.render('employees/view_employee', options)
         } catch (err) {
             console.log(`Something went wrong while fetching employee: ${err.message}`)
             req.flash('error', `Something went wrong while fetching employee because ${err.message}.`)
+            return res.render('error', {layout : 'layouts', styles : ['/assets/stylesheets/style.css'], tab_title: "ProfileHunt", title: "Oops! Error"})
+        }
+    },
+    welcome : async (req, res, next) => {
+        try {
+            let employeesInCompany = await Employee.find({}).sort({'name.first': 1})
+            for (let i = 0; i<employeesInCompany.length; i++){
+                employeesInCompany[i] = await employeesInCompany[i].decryptEmployee()
+            }
+            employeesInCompany = getPartialEmployeeFromEmployeeObject(employeesInCompany)
+            console.log(employeesInCompany)
+            let options = {
+                tab_title: "ProfileHunt",
+                title : "Home",
+                appName :"ProfileHunt",
+                employeeList: employeesInCompany,
+                layout : 'layouts',
+                styles : ['/assets/stylesheets/style.css']
+            }
+            return res.render('employees/welcome', options)
+        } catch (err) {
+            req.flash('error', `Something went wrong on welcome page because ${err.message}.`)
             return res.render('error', {layout : 'layouts', styles : ['/assets/stylesheets/style.css'], tab_title: "ProfileHunt", title: "Oops! Error"})
         }
     },
@@ -478,7 +494,17 @@ const getEmployeeFromEmployeeObject = (employee, editOrView) => {
     }
 }
 
-exports.employeeRegistrationValidations = [
+let getPartialEmployeeFromEmployeeObject = (employees) => {
+    return employees.map(employee => {
+        return {
+            name : employee.fullName,
+            employeeId: employee.id
+        }
+    })
+}
+exports.getPartialEmployeeFromEmployeeObject = getPartialEmployeeFromEmployeeObject
+
+    exports.employeeRegistrationValidations = [
     body('first')
         .notEmpty().withMessage('First Name is required.')
         .isLength({min: 2}).withMessage('First name must be at least 2 characters.'),

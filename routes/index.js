@@ -5,7 +5,7 @@ let { employeeController } = require('../controllers/employee-controller')
 /* GET home page. */
 router.get('/', async function(req, res, next) {
     if(req.isAuthenticated()) {
-        await employeeController.view(req, res, next)
+        await employeeController.welcome(req, res, next)
     }
     else{
         if(res.locals.showAddHR)

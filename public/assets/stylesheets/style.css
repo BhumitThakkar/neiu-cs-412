@@ -43,3 +43,7 @@ header {
   border-color: black;
   color: black;
 }
+
+#dateTime{
+  margin-right: 1.5rem;
+}

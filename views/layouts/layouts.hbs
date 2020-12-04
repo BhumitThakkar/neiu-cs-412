@@ -4,8 +4,9 @@
         <title>{{tab_title}}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/appImage.png">           // favicon
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/appImage.png">           <!-- favicon-->
         <link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.min.css">
+        <script src="/assets/javascripts/module.js"></script>
         {{#each styles}}
             <link rel='stylesheet' href={{this}} />
         {{/each}}
@@ -21,6 +22,8 @@
 
     <script src="/assets/vendor/feather-icons/feather.js"></script>
     <script>
+        dateTime.getDateTime()
         feather.replace()                   // it will show underline but it recognizes and works fine
     </script>
+
 </html>

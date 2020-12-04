@@ -1,6 +1,7 @@
 let Skill = require('../models/skills').Skill
 let Employee = require('../models/employee').Employee
 const { body, validationResult } = require('express-validator')
+let getPartialEmployeeFromEmployeeObject = require('../controllers/employee-controller').getPartialEmployeeFromEmployeeObject
 
 exports.skillsController = {
     create : async (req, res, next) => {
@@ -175,7 +176,7 @@ exports.skillsController = {
                 let employeePromises = uniqueSkilledEmployeeIds.map(id => Employee.findOne({_id: id}))
                 let skilledEmployees = await Promise.all(employeePromises)
                 if(skilledEmployees.length > 0)
-                    skilledEmployees = getEmployeeFromEmployeeObject(skilledEmployees)
+                    skilledEmployees = getPartialEmployeeFromEmployeeObject(skilledEmployees)
                 let options = {
                     tab_title: "ProfileHunt",
                     title : 'Skill Search',
@@ -197,15 +198,6 @@ const getSkillParams = body => {
     return {
         name : body.skillName
     }
-}
-
-const getEmployeeFromEmployeeObject = (employees) => {
-    return employees.map(employee => {
-        return {
-            name : employee.name.first+" "+employee.name.last,
-            employeeId: employee.id
-        }
-    })
 }
 
 exports.skillsValidations = [
