@@ -6,7 +6,7 @@ router.get('/register', async (req, res, next)=>{
     if(res.locals.showAddHR || (req.isAuthenticated() && res.locals.canAddEmployee)) {
         await employeeController.getSignup(req, res, next)
     } else {
-        req.flash('error', 'Permission Denied.')
+        req.flash('error', 'Permission denied.')
         return res.redirect('back')
     }
 })
@@ -42,11 +42,16 @@ router.get('/view', async (req, res, next) => {
 })
 
 router.get('/destroy', async (req, res, next) => {
-    if(req.isAuthenticated() && res.locals.canAddEmployee) {
-        await employeeController.destroy(req, res, next)
+    if(req.isAuthenticated()) {
+        if(res.locals.canAddEmployee)
+            await employeeController.destroy(req, res, next)
+        else{
+            req.flash('error', 'Permission denied.')
+            return res.redirect('back')
+        }
     } else {
-        req.flash('error', 'Permission Denied.')
-        return res.redirect('back')
+        req.flash('error', 'Please Login.')
+        return res.redirect('/employees/login')
     }
 })
 
