@@ -72,6 +72,8 @@ EmployeeSchema.pre('save', async function(next){
         employee.phNumber = edcrypt.encrypt(employee.phNumber)
         employee.jobTitle = edcrypt.encrypt(employee.jobTitle)
         employee.jobRole = edcrypt.encrypt(employee.jobRole)
+        if(employee.email.search("@") !== -1)                   // only needed for Change Password - no other option
+            employee.email = edcrypt.encrypt(employee.email)
         next()              // I added next - learnt from hovering on EmployeeSchema.pre()
     } catch (err) {
         console.log(`Error in encrypting employee while saving: ${err.message}.`)
@@ -86,6 +88,8 @@ EmployeeSchema.methods.encryptEmployeeParams = async function(employeeParam) {
         employeeParam.jobTitle = edcrypt.encrypt(employeeParam.jobTitle)
     if(employeeParam.jobRole)
         employeeParam.jobRole = edcrypt.encrypt(employeeParam.jobRole)
+    if(employeeParam.email)
+        employeeParam.email = edcrypt.encrypt(employeeParam.email)
     return employeeParam
 }
 
@@ -95,6 +99,7 @@ EmployeeSchema.methods.decryptEmployee = async function() {
     employee.phNumber = await edcrypt.decrypt(employee.phNumber)
     employee.jobTitle = await edcrypt.decrypt(employee.jobTitle)
     employee.jobRole = await edcrypt.decrypt(employee.jobRole)
+    employee.email = await edcrypt.decrypt(employee.email)
     return employee
 }
 

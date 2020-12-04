@@ -8,17 +8,17 @@ let encryptDecrypt = require('../appsupport').encryptDecrypt
 exports.employeeController = {
     create : async (req, res, next) => {
         const errors = validationResult(req)
-        let department
         if(!errors.isEmpty()){
             req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
             return res.redirect('/employees/register')
         } else {
             try {
                 // check email & phNumber uniqueNess - start
-                let existEmailEmployee = await Employee.findOne({ email : req.body.email})
                 let edcrypt = await encryptDecrypt()
-                let UpdatedEncryptedPhNumber = await edcrypt.encrypt(req.body.phNumber)
-                let existPhNumberEmployee = await Employee.findOne({ phNumber : UpdatedEncryptedPhNumber})
+                let encryptedEmail = await edcrypt.encrypt(req.body.email)
+                let existEmailEmployee = await Employee.findOne({ email : encryptedEmail })
+                let encryptedPhNumber = await edcrypt.encrypt(req.body.phNumber)
+                let existPhNumberEmployee = await Employee.findOne({ phNumber : encryptedPhNumber})
                 if(existEmailEmployee !== null) {
                     req.flash('error', 'Employee with given email already exist.')
                     return res.redirect('back')
@@ -28,7 +28,8 @@ exports.employeeController = {
                 }
                 // check email & phNumber uniqueNess - end
 
-               if(res.locals.showAddHR){                // there won't be any department added if any employee is not yet added
+                let department
+                if(res.locals.showAddHR){                // there won't be any department added if any employee is not yet added
                     department = await Department.create({ name : "HR", head : req.body.first+" "+req.body.last})
                 } else if(res.locals.showAddCEO){                // Executive Board Department to be added as soon as HR is added and CEO is being added
                     department = await Department.create({ name : "Executive Board", head : req.body.first+" "+req.body.last})
@@ -88,20 +89,28 @@ exports.employeeController = {
         }
     },
     authenticate: async (req, res, next) => {
-        await passport.authenticate('local', function (err, employee, info){
-            if(err)
-                return next(err)
-            if(!employee){
-                req.flash('error', 'Failed to login')
-                return res.redirect('back')                             // back - keyword to go back where we were
-            }
-            req.logIn(employee, function (err){
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+            req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
+            return res.redirect('/employees/login')
+        } else {
+            let edcrypt = await encryptDecrypt()
+            req.body.email = await edcrypt.encrypt(req.body.email.trim())
+            await passport.authenticate('local', function (err, employee, info){
                 if(err)
                     return next(err)
-                req.flash('success', `${employee.fullName} logged in!`)
-                return res.redirect('/')
-            })
-        })(req, res, next);
+                if(!employee){
+                    req.flash('error', 'Failed to login')
+                    return res.redirect('back')                             // back - keyword to go back where we were
+                }
+                req.logIn(employee, function (err){
+                    if(err)
+                        return next(err)
+                    req.flash('success', `${employee.fullName} logged in successfully.`)
+                    return res.redirect('/')
+                })
+            })(req, res, next);
+        }
     },
     view : async (req, res, next) => {
         try{
@@ -277,10 +286,11 @@ exports.employeeController = {
                 } else
                     employeeParams = getEditEmployeeParams(req.body)
 
-                let existEmailEmployee = await Employee.findOne({ email : req.body.email})
+                let updatedEncryptedEmail = await edcrypt.encrypt(req.body.email)
+                let existEmailEmployee = await Employee.findOne({ email : updatedEncryptedEmail})
                 let updatedEncryptedPhNumber = await edcrypt.encrypt(req.body.phNumber)
                 let existPhNumberEmployee = await Employee.findOne({ phNumber : updatedEncryptedPhNumber})
-                if(existEmailEmployee !== null && req.body.email !== employee.email) {
+                if(existEmailEmployee !== null && req.body.email.trim() !== employee.email) {              // employee already decrypted in starting
                     req.flash('error', 'Employee with given email already exist.')
                     return res.redirect('back')
                 } else if(existPhNumberEmployee !== null && req.body.phNumber !== employee.phNumber) {
@@ -383,8 +393,11 @@ exports.employeeController = {
             return res.redirect('back')
         } else {
             await req.user.decryptEmployee()
+            let edcrypt = await encryptDecrypt()
+            req.user.email = await edcrypt.encrypt(req.user.email)
             await req.user.changePassword(req.body.oldPassword.trim(), req.body.newPassword.trim(), function (err){
                 if(err){
+                    console.log(err)
                     if(err.name === "IncorrectPasswordError"){
                         req.flash('error', `Old password incorrect.`)
                         return res.redirect('/')
