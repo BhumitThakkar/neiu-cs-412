@@ -5,7 +5,7 @@ exports.getDateTime = function (){
     setInterval(function(){
         const now = new Date();
         document.getElementById("date").innerText = dateTime.format(now, 'ddd, MMM DD YYYY')
-        document.getElementById("time").innerText = dateTime.format(now, 'HH:mm:ss')
+        document.getElementById("time").innerText = dateTime.format(now, 'hh:mm:ss A')
     }, 1000)
 }
 },{"date-and-time":2}],2:[function(require,module,exports){
