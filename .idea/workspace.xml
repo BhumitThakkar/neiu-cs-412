@@ -19,11 +19,24 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="Final Project F">
+    <list default="true" id="f2ab0a2b-28c8-4e28-a5fe-4a0f04f29b59" name="Default Changelist" comment="Final Project G">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/employee-controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/employee-controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/employee.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/employee.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/partials/header.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/partials/header.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/appsupport.js" beforeDir="false" afterPath="$PROJECT_DIR$/appsupport.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/departments/add_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/add_department.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/departments/edit_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/edit_department.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/departments/view_all_departments.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/view_all_departments.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/departments/view_department.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/departments/view_department.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/employees/change_password.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/employees/change_password.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/employees/edit_employee.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/employees/edit_employee.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/employees/login.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/employees/login.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/employees/register.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/employees/register.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/employees/view_employee.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/employees/view_employee.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/error.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/error.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/partials/flash_messages.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/partials/flash_messages.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/skills/add_skill.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/skills/add_skill.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/skills/edit_skill.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/skills/edit_skill.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/skills/skill_search.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/skills/skill_search.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/skills/view_all_skills.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/views/skills/view_all_skills.hbs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +75,8 @@
       <envs>
         <env name="DB_URL" value="mongodb+srv://admin:wbwjZPyyMeGfHZQs@app-cluster.ywui3.mongodb.net/profilehunt_db?retryWrites=true&amp;w=majority" />
         <env name="SECRET" value="secret_passcode" />
+        <env name="KEY" value="s2#!FSDFSD!@#!~@#ASWS@!@!@#ASWEQ" />
+        <env name="IV" value="1234567890123497" />
       </envs>
       <method v="2" />
     </configuration>
@@ -111,7 +126,7 @@
       <workItem from="1606957728955" duration="33000" />
       <workItem from="1607019565114" duration="12872000" />
       <workItem from="1607039820558" duration="825000" />
-      <workItem from="1607040665632" duration="10414000" />
+      <workItem from="1607040665632" duration="11888000" />
     </task>
     <task id="LOCAL-00001" summary="HW 12">
       <created>1605827628880</created>
@@ -190,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607047722534</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Final Project G">
+      <created>1607051653281</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1607051653281</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,21 +242,22 @@
     <MESSAGE value="Final Project D" />
     <MESSAGE value="Final Project E" />
     <MESSAGE value="Final Project F" />
-    <option name="LAST_COMMIT_MESSAGE" value="Final Project F" />
+    <MESSAGE value="Final Project G" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final Project G" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="175" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606613413814">
+    <state x="668" y="109" width="1092" height="736" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1607052748180">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="175" width="1092" height="738" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1606613413814" />
+    <state x="668" y="109" width="1092" height="736" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1607052748180" />
     <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1606161120795">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1606161120795" />
-    <state x="827" y="282" key="EnvironmentVariablesDialog" timestamp="1605825935617">
+    <state x="1309" y="251" key="EnvironmentVariablesDialog" timestamp="1607052743955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="827" y="282" key="EnvironmentVariablesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605825935617" />
+    <state x="1309" y="251" key="EnvironmentVariablesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1607052743955" />
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1605827109780">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -303,10 +326,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="348" key="GridCell.Tab.3.right/0.0.1920.1040@0.0.1920.1040" timestamp="1606439879282" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1607047732990">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1607051659678">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607047732990" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607051659678" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1607047976379">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

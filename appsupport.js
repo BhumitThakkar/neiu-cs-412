@@ -77,8 +77,8 @@ exports.onListening = function () {
 
 exports.encryptDecrypt = async function () {
     let config = {
-        key: 's2#!FSDFSD!@#!~@#ASWS@!@!@#ASWEQ',//encryption and decryption key default key used
-        iv: '1234567890123497'
+        key: process.env.KEY,           // key:'s2#!FSDFSD!@#!~@#ASWS@!@!@#ASWEQ'             encryption and decryption key default key used
+        iv: process.env.IV              // iv:'1234567890123497'
     }
     return new EncryptorDecryptor(config)
 }
