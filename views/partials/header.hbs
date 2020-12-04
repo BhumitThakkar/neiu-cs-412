@@ -18,6 +18,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <span class="navbar-text col text-left">{{ title }}</span>
             {{#if loggedIn}}                                         <!-- loggedIn comes from res.locals.loggedIn from app.js -->
+                <!-- Search Box -->
+                <form method="post" action="/skills/search">
+                    <div class="input-group">
+                        <input type="text" id="searchBox" name="skillName" class="form-control btn-outline-dark border-right-0" placeholder="search skill..." aria-label="Example text with button addon" aria-describedby="button-addon1">
+                        <div class="input-group-prepend">
+                            <button class="btn form-control btn-outline-dark" type="submit" id="button-addon1"><i data-feather="search"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Search Box -->
                 {{#if showDepartment}}
                     <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/add">Add Department</a>
                     <a class="nav-item nav-link btn btn-dark col-auto" href="/departments/viewAll">All Department</a>
@@ -25,7 +35,7 @@
                 {{#if canAddEmployee}}
                         <a class="nav-item nav-link btn btn-dark col-auto" href="/employees/register">{{#if showAddCEO}}Add CEO Employee{{else}}Add Employee{{/if}}</a>
                 {{/if}}
-                <div class="dropdown">
+                <div class="dropdown nav-item">
                     <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
                         {{loggedInEmployee.fullName}} <span class="caret"></span>
                     </button>
@@ -37,6 +47,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/employees/view">View Profile</a>
                         <a class="dropdown-item" href="/employees/edit">Edit Profile</a>
+                        <a class="dropdown-item" href="/employees/changePassword">Change Password</a>
                     </div>
                 </div>
                 <span class="text-dark col-auto"></span>

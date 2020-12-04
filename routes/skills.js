@@ -6,7 +6,7 @@ let { skillsValidations, skillsController } = require('../controllers/skills-con
 router.get('/add', async function(req, res, next) {
     if(req.isAuthenticated()) {
         try{
-            let skill = await skillsController.getAddSkill(req, res, next)
+            await skillsController.getAddSkill(req, res, next)
         }
         catch (err){
             next(err)
@@ -23,9 +23,9 @@ router.post('/save', skillsValidations, async (req, res, next) => {
         try{
             let skill
             if(req.body.saveMethod === 'create')
-                skill = await skillsController.create(req, res, next)
+                await skillsController.create(req, res, next)
             else
-                skill = await skillsController.update(req, res, next)
+                await skillsController.update(req, res, next)
         }
         catch (err){
             next(err)
@@ -40,7 +40,7 @@ router.post('/save', skillsValidations, async (req, res, next) => {
 router.get('/view', async function(req, res, next) {
     if(req.isAuthenticated()) {
         try{
-            let skill = await skillsController.view(req, res, next)
+            await skillsController.view(req, res, next)
         }
         catch (err){
             next(err)
@@ -55,7 +55,7 @@ router.get('/view', async function(req, res, next) {
 router.get('/edit', async function(req, res, next) {
     if(req.isAuthenticated()) {
         try{
-            let skill = await skillsController.getEditSkill(req, res, next)
+            await skillsController.getEditSkill(req, res, next)
         }
         catch (err){
             next(err)
@@ -70,7 +70,7 @@ router.get('/edit', async function(req, res, next) {
 router.get('/destroy', async function(req, res, next) {
     if(req.isAuthenticated()) {
         try{
-            let skill = await skillsController.destroy(req, res, next)
+            await skillsController.destroy(req, res, next)
         }
         catch (err){
             next(err)
@@ -85,7 +85,22 @@ router.get('/destroy', async function(req, res, next) {
 router.get('/viewAll', async function(req, res, next) {
     if(req.isAuthenticated()) {
         try {
-            let AllSkills = await skillsController.getAllSkills(req, res, next)
+            await skillsController.getAllSkills(req, res, next)
+        }
+        catch (err) {
+            next(err)
+        }
+    } else {
+        req.flash('error', 'Please log in.')
+        return res.redirect('/employees/login')
+    }
+})
+
+// Searching employees with specific skill
+router.post('/search', skillsValidations, async function(req, res, next) {
+    if(req.isAuthenticated()) {
+        try {
+            await skillsController.skillSearch(req, res, next)
         }
         catch (err) {
             next(err)

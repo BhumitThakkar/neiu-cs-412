@@ -341,7 +341,6 @@ exports.employeeController = {
     getLogin: async (req, res, next) => {
         try {
             let options = {
-                isCreate: true,
                 tab_title: "ProfileHunt",
                 title : 'Employee Login',
                 layout : 'layouts',
@@ -349,25 +348,58 @@ exports.employeeController = {
             }
             return res.render('employees/login', options)
         } catch (err) {
-            req.flash('error', `Error Getting Login Page because ${err.msg}`)
+            req.flash('error', `Error getting login page because ${err.msg}`)
             return res.redirect('/')
         }
     },
     logout: async (req, res, next) => {
-        if(req.isAuthenticated()) {
+        try {
             req.logout()
-            if(req.isAuthenticated()) {
-                req.flash('error', 'Unable to Log Out.')
-                return res.redirect('back')                    // back is keyword to go back to where we were
-            } else {
-                req.flash('success', 'Employee Logged Out Successfully.')
-                return res.redirect('/employees/login')
-            }
-        } else {
-            req.flash('error', 'Please log in before trying to logout.')
+            req.flash('success', 'Employee Logged Out Successfully.')
             return res.redirect('/employees/login')
+        } catch(err) {
+            req.flash('error', `Error while logging out because ${err.msg}.`)
+            return res.redirect('back')
+        }
+    },
+    getChangePassword: async (req, res, next) => {
+        try {
+            let options = {
+                tab_title: "ProfileHunt",
+                title : 'Change Password',
+                layout : 'layouts',
+                styles : ['/assets/stylesheets/style.css'],
+            }
+            return res.render('employees/change_password', options)
+        } catch (err) {
+            req.flash('error', `Error getting change password page because ${err.msg}`)
+            return res.redirect('/')
+        }
+    },
+    changePassword: async (req, res, next) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+            req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
+            return res.redirect('back')
+        } else {
+            await req.user.decryptEmployee()
+            await req.user.changePassword(req.body.oldPassword.trim(), req.body.newPassword.trim(), function (err){
+                if(err){
+                    if(err.name === "IncorrectPasswordError"){
+                        req.flash('error', `Old password incorrect.`)
+                        return res.redirect('/')
+                    } else {
+                        req.flash('error', `Error while changing password because ${err.msg}`)
+                        return res.redirect('/')
+                    }
+                } else {
+                    req.flash('success', `Password changed successfully.`)
+                    return res.redirect('/')
+                }
+            })
         }
     }
+
 }
 
 function getEditEmployeeParams(body) {
@@ -533,4 +565,13 @@ exports.employeeLoginValidations = [
     body('email')
         .notEmpty().withMessage('Email is required.')
         .isEmail().normalizeEmail().withMessage('Email is invalid.')
+]
+
+exports.changePasswordValidation = [
+    body('oldPassword')
+        .notEmpty().withMessage('Password is required.')
+        .isLength({min: 8}).withMessage('Password must be at least 8 characters.'),
+    body('newPassword')
+        .notEmpty().withMessage('Password is required.')
+        .isLength({min: 8}).withMessage('Password must be at least 8 characters.'),
 ]

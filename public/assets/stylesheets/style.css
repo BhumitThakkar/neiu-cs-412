@@ -37,3 +37,9 @@ header {
 .dropdown-item:hover {
   background: #d3d3d3;
 }
+
+#searchBox{
+  background: white;
+  border-color: black;
+  color: black;
+}

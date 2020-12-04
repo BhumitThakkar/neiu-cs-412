@@ -26,7 +26,9 @@ exports.skillsController = {
                         skill = await Skill.create(skillParams)
                     }
                     req.user.skills.push(skill.id)
+                    skill.employees.push(req.user.id)
                     req.user = await Employee.findByIdAndUpdate({_id:req.user.id}, {skills: req.user.skills}, {new: true})             // new:true ensures updated employee is returned
+                    req.user = await Skill.findByIdAndUpdate({_id:skill.id}, {employees: skill.employees}, {new: true})             // new:true ensures updated employee is returned
                     req.flash('success', `${skill.name} skill is created successfully.`)
                     return res.redirect('/skills/viewAll')
                 }
@@ -140,7 +142,7 @@ exports.skillsController = {
             skillList : AllSkills,
             layout : 'layouts',
             styles : ['/assets/stylesheets/style.css'],
-            isAllSkillActive: 'active'
+            // isAllSkillActive: 'active'
         }
         return res.render('skills/view_all_skills', options);
     },
@@ -151,9 +153,43 @@ exports.skillsController = {
             title : 'Add Skill',
             layout : 'layouts',
             styles : ['/assets/stylesheets/style.css'],
-            isAddSkillActive: 'active'
+            // isAddSkillActive: 'active'
         }
         return res.render('skills/add_skill', options)
+    },
+    skillSearch:  async (req, res, next) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+            req.flash('error', errors.array().map(e => e.msg + '</br>').join(''))
+            return res.redirect('/')
+        } else {
+            try{
+                let skills = await Skill.find({})
+                let skilledEmployeeIds = []
+                await skills.filter(skill => {
+                    return skill.name.toLowerCase().split(" ").includes(req.body.skillName.trim().toLowerCase()) || (skill.name.toLowerCase() === req.body.skillName.trim().toLowerCase())
+                }).map(skill => {
+                    skilledEmployeeIds = skilledEmployeeIds.concat(skill.employees.map( str => str.toString() ))
+                })
+                let uniqueSkilledEmployeeIds = [...new Set(skilledEmployeeIds)]
+                let employeePromises = uniqueSkilledEmployeeIds.map(id => Employee.findOne({_id: id}))
+                let skilledEmployees = await Promise.all(employeePromises)
+                if(skilledEmployees.length > 0)
+                    skilledEmployees = getEmployeeFromEmployeeObject(skilledEmployees)
+                let options = {
+                    tab_title: "ProfileHunt",
+                    title : 'Skill Search',
+                    layout : 'layouts',
+                    styles : ['/assets/stylesheets/style.css'],
+                    employeeList : skilledEmployees
+                }
+                return res.render('skills/skill_search', options)
+            } catch (err){
+                console.log(`Something went wrong while fetching skill: ${err.message}`)
+                req.flash('error', `Something went wrong while searching skill because ${err.message}.`)
+                return res.redirect('back')
+            }
+        }
     }
 }
 
@@ -161,6 +197,15 @@ const getSkillParams = body => {
     return {
         name : body.skillName
     }
+}
+
+const getEmployeeFromEmployeeObject = (employees) => {
+    return employees.map(employee => {
+        return {
+            name : employee.name.first+" "+employee.name.last,
+            employeeId: employee.id
+        }
+    })
 }
 
 exports.skillsValidations = [
