@@ -1,4 +1,4 @@
-# Application Name:
+# Application:
 [Profile Hunt](http://profilehunt.herokuapp.com/).
 
 # Project Topic/Objective:
